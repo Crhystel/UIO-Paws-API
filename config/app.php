@@ -131,7 +131,7 @@ return [
         App\Providers\AuthServiceProvider::class,
         // App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
-        App\Providers\RouteServiceProvider::class, // <-- ¡LA LÍNEA MÁS IMPORTANTE PARA TI!
+        App\Providers\RouteServiceProvider::class, 
 
     ],
 

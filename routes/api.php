@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
+use App\Http\Middleware\IsAdminMiddleware;
 
 // --- Rutas Públicas (Registro y Login) ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -15,6 +16,6 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // --- Rutas Protegidas solo para Administradores (CRUD de Usuarios) ---
-Route::middleware(['auth:sanctum', 'is.admin'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', IsAdminMiddleware::class])->prefix('admin')->group(function () {
     Route::apiResource('users', AdminUserController::class);
 });
