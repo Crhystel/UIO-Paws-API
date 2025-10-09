@@ -28,15 +28,25 @@
 
         public function login(Request $request)
         {
-            $request->validate(['email' => 'required|email', 'password' => 'required']);
+            $request->validate([
+                'email' => 'required|email',
+                'password' => 'required',
+            ]);
             $user = User::where('email', $request->email)->first();
 
             if (!$user || !Hash::check($request->password, $user->password)) {
-                throw ValidationException::withMessages(['email' => ['Las credenciales son incorrectas.']]);
+                throw ValidationException::withMessages([
+                    'email' => ['Las credenciales son incorrectas.'],
+                ]);
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
-            return response()->json(['access_token' => $token, 'token_type' => 'Bearer', 'user_role' => $user->role]);
+
+            return response()->json([
+                'access_token' => $token,
+                'token_type' => 'Bearer',
+                'user_role' => $user->role
+            ]);
         }
 
         public function logout(Request $request)
