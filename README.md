@@ -1,61 +1,119 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# UIO Paws - API Backend
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+This repository contains the backend API for **UIO Paws**, a comprehensive pet adoption platform. This API is built with Laravel and provides a secure, role-based RESTful service for managing users and platform data. It uses Laravel Sanctum for authentication.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## ✨ Features
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+-   **Secure Authentication**: User registration, login, and logout endpoints powered by Laravel Sanctum.
+-   **Role-Based Access Control (RBAC)**: Differentiates between regular users and administrators, protecting sensitive endpoints.
+-   **Full User Management**: Complete CRUD (Create, Read, Update, Delete) functionality for administrators to manage all users.
+-   **RESTful Architecture**: Follows REST principles for predictable and easy-to-understand API design.
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+---
 
-## Learning Laravel
+## 🛠️ Technology Stack
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+-   **Framework**: Laravel 12
+-   **Language**: PHP 8.3
+-   **Database**: MySQL
+-   **Authentication**: Laravel Sanctum
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+---
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+## 🚀 Getting Started
 
-## Laravel Sponsors
+Follow these instructions to get the API server up and running on your local machine.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### Prerequisites
 
-### Premium Partners
+-   PHP >= 8.3
+-   Composer
+-   MySQL or another compatible database
+-   A command-line interface (CLI)
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+### Installation & Setup
 
-## Contributing
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/uio-paws-api.git
+    cd uio-paws-api
+    ```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+2.  **Install PHP dependencies:**
+    ```bash
+    composer install
+    ```
 
-## Code of Conduct
+3.  **Create the environment file:**
+    ```bash
+    cp .env.example .env
+    ```
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+4.  **Generate an application key:**
+    ```bash
+    php artisan key:generate
+    ```
 
-## Security Vulnerabilities
+5.  **Configure your database:**
+    -   Create a new database for the project (e.g., `uio_paws`).
+    -   Open the `.env` file and update the `DB_*` variables with your database credentials:
+        ```env
+        DB_CONNECTION=mysql
+        DB_HOST=127.0.0.1
+        DB_PORT=3306
+        DB_DATABASE=uio_paws
+        DB_USERNAME=root
+        DB_PASSWORD=your_password
+        ```
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+6.  **Run database migrations and seeders:**
+    This will create the necessary tables and seed the database with an initial administrator account.
+    ```bash
+    php artisan migrate --seed
+    ```
+    An admin user will be created with the following credentials:
+    -   **Email**: `admin@adopcion.com`
+    -   **Password**: `UioPaws123`
 
-## License
+7.  **Run the development server:**
+    It's recommended to run the API on port `8000`.
+    ```bash
+    php artisan serve --port=8000
+    ```
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+The API is now running and accessible at `http://127.0.0.1:8000`.
+
+---
+
+## 🔑 API Endpoints
+
+All data is returned in JSON format. Protected routes require a `Bearer Token` in the `Authorization` header.
+
+### Authentication
+
+| Method | Endpoint          | Description                    | Protection |
+| :----- | :---------------- | :----------------------------- | :--------- |
+| `POST` | `/api/register`   | Creates a new user account.    | Public     |
+| `POST` | `/api/login`      | Logs in a user, returns a token. | Public     |
+| `POST` | `/api/logout`     | Logs out the authenticated user. | Sanctum    |
+| `GET`  | `/api/profile`    | Gets the authenticated user's profile. | Sanctum    |
+
+### Admin: User Management
+
+These routes are protected and require both a valid token and admin privileges.
+
+| Method   | Endpoint                | Description                       | Protection     |
+| :------- | :---------------------- | :-------------------------------- | :------------- |
+| `GET`    | `/api/admin/users`      | Get a list of all users.          | Sanctum, Admin |
+| `POST`   | `/api/admin/users`      | Create a new user.                | Sanctum, Admin |
+| `GET`    | `/api/admin/users/{id}` | Get a single user by ID.          | Sanctum, Admin |
+| `PUT`    | `/api/admin/users/{id}` | Update a user's details.          | Sanctum, Admin |
+| `DELETE` | `/api/admin/users/{id}` | Delete a user.                    | Sanctum, Admin |
+
+---
+
+## 📄 License
+
+This project is open-source and available under the [MIT License](LICENSE.md).
