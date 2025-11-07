@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Spatie\Permission\Traits\HasRoles;
 
 class User extends Authenticatable
 {
@@ -68,6 +69,30 @@ class User extends Authenticatable
     public function getAuthPassword()
     {
         return $this->password_hash;
+    }
+    public function address()
+    {
+        return $this->belongsTo(Address::class, 'id_address');
+    }
+    public function donations()
+    {
+        return $this->hasMany(Donation::class, 'id_user');
+    }
+    public function emergencyContacts()
+    {
+        return $this->hasMany(EmergencyContact::class, 'id_user');
+    }
+    public function volunteerApplications()
+    {
+        return $this->hasMany(VolunteerApplication::class, 'id_user');
+    }
+    public function adoptionApplications()
+    {
+        return $this->hasMany(AdoptionApplication::class, 'id_user');
+    }
+    public function termAcceptances()
+    {
+        return $this->hasMany(UserTermAcceptance::class, 'id_user');
     }
     public function address()
     {
