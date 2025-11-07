@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
@@ -8,42 +9,59 @@ use Illuminate\Support\Facades\Hash;
 
 class AdminUserController extends Controller
 {
-    public function index() { return User::all(); }
+    public function index()
+    {
+        return User::with('roles')->get();
+    }
 
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
+        $validated = $request->validate([
+            'first_name' => 'required|string|max:255',
+            'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
-            'role' => 'required|in:user,admin',
+            'password_hash' => 'required|string|min:8',
+            'role' => 'required|string|exists:roles,name' 
         ]);
 
         $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-            'role' => $request->role,
+            'first_name' => $validated['first_name'],
+            'last_name' => $validated['last_name'],
+            'email' => $validated['email'],
+            'password_hash' => Hash::make($validated['password_hash']),
         ]);
+
+        $user->assignRole($validated['role']);
+
         return response()->json($user, 201);
     }
 
-    public function show(User $user) { return $user; }
+    public function show(User $user)
+    {
+        return $user->load('roles');
+    }
 
     public function update(Request $request, User $user)
     {
-        $request->validate([
-            'name' => 'sometimes|required|string|max:255',
-            'email' => 'sometimes|required|string|email|max:255|unique:users,email,'.$user->id,
-            'role' => 'sometimes|required|in:user,admin',
+        $validated = $request->validate([
+            'first_name' => 'sometimes|required|string|max:255',
+            'last_name' => 'sometimes|required|string|max:255',
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id_user . ',id_user',
+            'role' => 'sometimes|required|string|exists:roles,name'
         ]);
-        $user->update($request->all());
+
+        $user->update($validated);
+
+        if ($request->has('role')) {
+            $user->syncRoles($validated['role']);
+        }
+
         return response()->json($user);
     }
 
     public function destroy(User $user)
     {
         $user->delete();
-        return response()->json(['message' => 'Usuario eliminado.']);
+        return response()->json(null, 204);
     }
 }
