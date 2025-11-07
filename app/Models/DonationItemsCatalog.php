@@ -13,25 +13,5 @@ class DonationItemsCatalog extends Model
     protected $primaryKey = 'id_donation_item_catalog';
     public $timestamps = false;
 
-    protected $fillable = [
-        'item_name', 
-        'description', 
-        'category', 
-        'quantity_needed', 
-        'id_shelter'
-    ];
-    
-    public function shelter()
-    {
-        return $this->belongsTo(\App\Models\Shelter::class, 'id_shelter');
-    }
-    public function applications()
-    {
-        return $this->belongsToMany(
-            DonationApplication::class, 
-            'donation_application_items', 
-            'id_donation_item_catalog',  
-            'id_donation_application'     
-        )->withPivot('quantity');
-    }
+    protected $fillable = ['item_name', 'description'];
 }
