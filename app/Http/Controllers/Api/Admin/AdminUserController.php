@@ -21,7 +21,7 @@ class AdminUserController extends Controller
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8',
+            'password_hash' => 'required|string|min:8',
             'role' => 'required|string|exists:roles,name' 
         ]);
 
@@ -29,12 +29,12 @@ class AdminUserController extends Controller
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
-            'password_hash' => Hash::make($validated['password']),
+            'password_hash' => Hash::make($validated['password_hash']),
         ]);
 
         $user->assignRole($validated['role']);
 
-        return response()->json($user->load('roles'), 201);
+        return response()->json($user, 201);
     }
 
     public function show(User $user)
@@ -47,7 +47,7 @@ class AdminUserController extends Controller
         $validated = $request->validate([
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
-            'email' => ['sometimes', 'required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user->id_user, 'id_user')],
+            'email' => 'sometimes|required|string|email|max:255|unique:users,email,' . $user->id_user . ',id_user',
             'role' => 'sometimes|required|string|exists:roles,name'
         ]);
 
@@ -56,7 +56,7 @@ class AdminUserController extends Controller
             $user->syncRoles($validated['role']);
         }
 
-        return response()->json($user->load('roles'));
+        return response()->json($user);
     }
 
     public function destroy(User $user)
