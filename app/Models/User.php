@@ -13,7 +13,6 @@ class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
-    protected $guard_name = 'sanctum';
 
     /**
      * The attributes that are mass assignable.
@@ -46,7 +45,7 @@ class User extends Authenticatable
         'password_hash',
         'remember_token',
     ];
-    public $timestamps = true;
+    public $timestamps = false;
 
     /**
      * Get the attributes that should be cast.
@@ -59,15 +58,6 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password_hash' => 'hashed',
         ];
-    }
-    /**
-     * Get the password for the user.
-     *
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return $this->password_hash;
     }
     public function address()
     {
