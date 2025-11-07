@@ -22,7 +22,7 @@ use App\Http\Controllers\Api\Volunteers\VolunteerOpportunityController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\Admin\ApplicationController as AdminApplicationController;
 
-// --- RUTAS PÚBLICAS Y DE AUTENTICACIÓN ---
+// Rutas Públicas 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
