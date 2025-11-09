@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Animals;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; 
+use App\Controllers\Controller;
 use App\Models\Species;
 
 class SpeciesController extends Controller
@@ -30,6 +30,6 @@ class SpeciesController extends Controller
     }
     public function destroy(Species $species){
         $species->delete();
-        return response()->json(null, 204); 
+        return response()->json($species,204);
     }
 }
