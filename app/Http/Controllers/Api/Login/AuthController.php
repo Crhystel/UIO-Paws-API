@@ -51,51 +51,23 @@
                 'password' => 'required',
             ]);
             $user = User::where('email', $request->email)->first();
-<<<<<<< HEAD
-<<<<<<< HEAD
             if (!$user) {
                 return response()->json(['error' => 'Usuario no encontrado en la base de datos.'], 404);
             }
 
             if (!$user || !Hash::check($request->password, $user->password_hash)) {
-=======
-
-            if (!$user || !Hash::check($request->password, $user->password)) {
->>>>>>> c4804f8 (rearranging controller files)
-=======
-            if (!$user) {
-                return response()->json(['error' => 'Usuario no encontrado en la base de datos.'], 404);
-            }
-
-            if (!$user || !Hash::check($request->password, $user->password_hash)) {
->>>>>>> 5d3b729 (fixing error on password property for login)
                 throw ValidationException::withMessages([
                     'email' => ['Las credenciales son incorrectas.'],
                 ]);
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
-<<<<<<< HEAD
-<<<<<<< HEAD
             $userRole = $user->getRoleNames()->first();
-=======
->>>>>>> c4804f8 (rearranging controller files)
-=======
-            $userRole = $user->getRoleNames()->first();
->>>>>>> bbd42b6 (fixing typos, variable name problems, and removing unnecessary files)
 
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-<<<<<<< HEAD
-<<<<<<< HEAD
                 'user_role' => $userRole
-=======
-                'user_role' => $user->role
->>>>>>> c4804f8 (rearranging controller files)
-=======
-                'user_role' => $userRole
->>>>>>> bbd42b6 (fixing typos, variable name problems, and removing unnecessary files)
             ]);
         }
 
@@ -107,14 +79,6 @@
 
         public function userProfile(Request $request)
         {
-<<<<<<< HEAD
-<<<<<<< HEAD
             return response()->json($request->user()->load('roles'));
-=======
-            return response()->json($request->user());
->>>>>>> c4804f8 (rearranging controller files)
-=======
-            return response()->json($request->user()->load('roles'));
->>>>>>> bbd42b6 (fixing typos, variable name problems, and removing unnecessary files)
         }
     }
