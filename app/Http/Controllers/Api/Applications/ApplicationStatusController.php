@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Applications;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Controllers\Controller;
 use App\Models\ApplicationStatus;
 
 class ApplicationStatusController extends Controller
@@ -30,6 +30,6 @@ class ApplicationStatusController extends Controller
     }
     public function destroy(ApplicationStatus $applicationStatus){
         $applicationStatus->delete();
-        return response()->json(null,204);
+        return response()->json($applicationStatus,204);
     }
 }
