@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Applications;
 
 use App\Http\Controllers\Controller;
 use App\Models\AdoptionApplication;
