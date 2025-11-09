@@ -2,18 +2,25 @@
 
 namespace App\Http\Controllers\Api\Shelters;
 
+<<<<<<< HEAD
 use App\Http\Controllers\Controller;
 use App\Models\Shelter;
 use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr; 
+=======
+use Illuminate\Http\Request;
+use App\Controllers\Controller;
+use App\Models\Shelter;
+>>>>>>> c4804f8 (rearranging controller files)
 
 class ShelterController extends Controller
 {
     public function index(){
         return Shelter::with('address')->get();
     }
+<<<<<<< HEAD
 
     public function store(Request $request){
         $validated = $request->validate([
@@ -74,3 +81,35 @@ class ShelterController extends Controller
         return response()->json(null, 204);
     }
 }
+=======
+    public function store(Request $request){
+        $validated=$request->validate([
+            'shelter_name'=>'required|string|max:255',
+            'contact_email'=>'required|email|max:255',
+            'phone'=>'required|string|max:20',
+            'description'=>'nullable|string',
+            'id_address'=>'required|exists:addresses.id_address',
+        ]);
+        $shelter=Shelter::create($validated);
+        return response()->json($shelter->load('address'),201);
+    }
+    public function show(Shelter $shelter){
+        return $shelter->load('address');
+    }
+    public function update(Request $request, Shelter $shelter){
+        $validated=$request->validate([
+            'shelter_name'=>'sometimes|required|string|max:255',
+            'contact_email'=>'sometimes|required|email|max:255',
+            'phone'=>'sometimes|required|string|max:20',
+            'description'=>'sometimes|nullable|string',
+            'id_address'=>'sometimes|required|exists:addresses,id_address',
+        ]);
+        $shelter->update($validated);
+        return response()->json($shelter->load('address'));
+    }
+    public function destroy(Shelter $shelter){
+        $shelter->delete();
+        return response()->json(null,204);
+    }
+}
+>>>>>>> c4804f8 (rearranging controller files)

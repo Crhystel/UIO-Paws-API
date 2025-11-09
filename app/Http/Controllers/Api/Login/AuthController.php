@@ -11,6 +11,7 @@
     {
         public function register(Request $request)
         {
+<<<<<<< HEAD
             try {
                 $validated = $request->validate([
                     'first_name' => 'required|string|max:255',
@@ -42,6 +43,21 @@
                 return response()->json([
                     'message' => 'Ocurrió un error inesperado durante el registro.'], 500);
             }
+=======
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+
+            User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+
+            return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
+>>>>>>> c4804f8 (rearranging controller files)
         }
 
         public function login(Request $request)
@@ -51,23 +67,35 @@
                 'password' => 'required',
             ]);
             $user = User::where('email', $request->email)->first();
+<<<<<<< HEAD
             if (!$user) {
                 return response()->json(['error' => 'Usuario no encontrado en la base de datos.'], 404);
             }
 
             if (!$user || !Hash::check($request->password, $user->password_hash)) {
+=======
+
+            if (!$user || !Hash::check($request->password, $user->password)) {
+>>>>>>> c4804f8 (rearranging controller files)
                 throw ValidationException::withMessages([
                     'email' => ['Las credenciales son incorrectas.'],
                 ]);
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
+<<<<<<< HEAD
             $userRole = $user->getRoleNames()->first();
+=======
+>>>>>>> c4804f8 (rearranging controller files)
 
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
+<<<<<<< HEAD
                 'user_role' => $userRole
+=======
+                'user_role' => $user->role
+>>>>>>> c4804f8 (rearranging controller files)
             ]);
         }
 
@@ -79,6 +107,10 @@
 
         public function userProfile(Request $request)
         {
+<<<<<<< HEAD
             return response()->json($request->user()->load('roles'));
+=======
+            return response()->json($request->user());
+>>>>>>> c4804f8 (rearranging controller files)
         }
     }
