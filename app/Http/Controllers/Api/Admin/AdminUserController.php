@@ -12,11 +12,15 @@ class AdminUserController extends Controller
 {
     public function index()
     {
+        $this->authorize('manage users'); 
+        
         return User::with('roles')->get();
     }
 
     public function store(Request $request)
     {
+        $this->authorize('manage users');
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
@@ -39,11 +43,14 @@ class AdminUserController extends Controller
 
     public function show(User $user)
     {
+        $this->authorize('manage users');
         return $user->load('roles');
     }
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('manage users');
+
         $validated = $request->validate([
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
@@ -61,6 +68,8 @@ class AdminUserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('manage users');
+        
         $user->delete();
         return response()->json(null, 204);
     }
