@@ -11,16 +11,18 @@
     {
         public function register(Request $request)
         {
-            $request->validate([
-                'name' => 'required|string|max:255',
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => 'required|string|min:8|confirmed',
             ]);
 
             User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'email' => $validated['email'],
+                'password_hash' => Hash::make($validated['password']),
             ]);
 
             return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
@@ -44,11 +46,12 @@
             }
 
             $token = $user->createToken('auth_token')->plainTextToken;
+            $userRole = $user->getRoleNames()->first();
 
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
-                'user_role' => $user->role
+                'user_role' => $userRole
             ]);
         }
 
@@ -60,6 +63,6 @@
 
         public function userProfile(Request $request)
         {
-            return response()->json($request->user());
+            return response()->json($request->user()->load('roles'));
         }
     }

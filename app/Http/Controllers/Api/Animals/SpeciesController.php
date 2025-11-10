@@ -30,6 +30,6 @@ class SpeciesController extends Controller
     }
     public function destroy(Species $species){
         $species->delete();
-        return response()->json($species,204);
+        return response()->json(null, 204); 
     }
 }
