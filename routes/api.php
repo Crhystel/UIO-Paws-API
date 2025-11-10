@@ -14,7 +14,7 @@ use App\Http\Controllers\Api\Donations\DonationItemsCatalogController;
 use App\Http\Controllers\Api\Applications\ApplicationStatusController;
 use App\Http\Controllers\Api\Applications\AdoptionApplicationController;
 use App\Http\Controllers\Api\Applications\VolunteerApplicationController;
-use App\Http\Controllers\Api\Donations\DonationController as AdminDonationControl
+use App\Http\Controllers\Api\Donations\DonationController as AdminDonationControl;
 
 // Apunta a Api/Login/AuthController
 Route::post('/register', [AuthController::class, 'register']);
