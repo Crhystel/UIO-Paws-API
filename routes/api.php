@@ -38,7 +38,7 @@ Route::prefix('public')->name('public.')->group(function () {
 
 // --- RUTAS PARA USUARIOS AUTENTICADOS ---
 Route::middleware('auth:sanctum')->group(function () {
-    // Gestión de Sesión y Perfil
+    // Gestión de Sesión y Perfil (usa el AuthController de Login)
     Route::post('/logout', [AuthController::class, 'logout']);
     
     // RUTA PRINCIPAL DE PERFIL
