@@ -12,24 +12,28 @@ class AdminUserController extends Controller
 {
     public function index()
     {
+        $this->authorize('manage users'); 
+        
         return User::with('roles')->get();
     }
 
     public function store(Request $request)
     {
+        $this->authorize('manage users');
+
         $validated = $request->validate([
             'first_name' => 'required|string|max:255',
             'last_name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8', 
-            'role' => 'required|string|exists:roles,name'
+            'password' => 'required|string|min:8',
+            'role' => 'required|string|exists:roles,name' 
         ]);
 
         $user = User::create([
             'first_name' => $validated['first_name'],
             'last_name' => $validated['last_name'],
             'email' => $validated['email'],
-            'password_hash' => Hash::make($validated['password']), 
+            'password_hash' => Hash::make($validated['password']),
         ]);
 
         $user->assignRole($validated['role']);
@@ -39,11 +43,14 @@ class AdminUserController extends Controller
 
     public function show(User $user)
     {
+        $this->authorize('manage users');
         return $user->load('roles');
     }
 
     public function update(Request $request, User $user)
     {
+        $this->authorize('manage users');
+
         $validated = $request->validate([
             'first_name' => 'sometimes|required|string|max:255',
             'last_name' => 'sometimes|required|string|max:255',
@@ -52,7 +59,6 @@ class AdminUserController extends Controller
         ]);
 
         $user->update($validated);
-
         if ($request->has('role')) {
             $user->syncRoles($validated['role']);
         }
@@ -62,6 +68,8 @@ class AdminUserController extends Controller
 
     public function destroy(User $user)
     {
+        $this->authorize('manage users');
+        
         $user->delete();
         return response()->json(null, 204);
     }
