@@ -76,18 +76,26 @@
 
             $token = $user->createToken('auth_token')->plainTextToken;
 <<<<<<< HEAD
+<<<<<<< HEAD
             $userRole = $user->getRoleNames()->first();
 =======
 >>>>>>> c4804f8 (rearranging controller files)
+=======
+            $userRole = $user->getRoleNames()->first();
+>>>>>>> bbd42b6 (fixing typos, variable name problems, and removing unnecessary files)
 
             return response()->json([
                 'access_token' => $token,
                 'token_type' => 'Bearer',
 <<<<<<< HEAD
+<<<<<<< HEAD
                 'user_role' => $userRole
 =======
                 'user_role' => $user->role
 >>>>>>> c4804f8 (rearranging controller files)
+=======
+                'user_role' => $userRole
+>>>>>>> bbd42b6 (fixing typos, variable name problems, and removing unnecessary files)
             ]);
         }
 
@@ -100,9 +108,13 @@
         public function userProfile(Request $request)
         {
 <<<<<<< HEAD
+<<<<<<< HEAD
             return response()->json($request->user()->load('roles'));
 =======
             return response()->json($request->user());
 >>>>>>> c4804f8 (rearranging controller files)
+=======
+            return response()->json($request->user()->load('roles'));
+>>>>>>> bbd42b6 (fixing typos, variable name problems, and removing unnecessary files)
         }
     }
