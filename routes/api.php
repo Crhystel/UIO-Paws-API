@@ -4,73 +4,80 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Login\AuthController;
 use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\User\ApplicationController as UserApplicationController;
-use App\Http\Controllers\Api\User\UserDonationController;
+use App\Http\Controllers\Api\User\DonationApplicationController as UserDonationApplicationController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
-use App\Http\Controllers\Api\Animals\AnimalController;
-use App\Http\Controllers\Api\Animals\SpeciesController;
-use App\Http\Controllers\Api\Animals\BreedController;
-use App\Http\Controllers\Api\Shelters\ShelterController;
-use App\Http\Controllers\Api\Donations\DonationItemsCatalogController;
-use App\Http\Controllers\Api\Applications\ApplicationStatusController;
-use App\Http\Controllers\Api\Applications\AdoptionApplicationController;
-use App\Http\Controllers\Api\Applications\VolunteerApplicationController;
-use App\Http\Controllers\Api\Donations\DonationController as AdminDonationControl;
-use App\Http\Controllers\Api\User\UserDonationApplicationController;
-use App\Http\Controllers\Api\Applications\DonationApplicationController as AdminDonationApplicationController;
+use App\Http\Controllers\Api\Admin\AnimalController;
+use App\Http\Controllers\Api\Admin\SpeciesController;
+use App\Http\Controllers\Api\Admin\BreedController;
+use App\Http\Controllers\Api\Admin\ShelterController;
+use App\Http\Controllers\Api\Admin\DonationItemsCatalogController;
+use App\Http\Controllers\Api\Admin\ApplicationStatusController;
+use App\Http\Controllers\Api\Admin\AdoptionApplicationController;
+use App\Http\Controllers\Api\Admin\VolunteerApplicationController;
+use App\Http\Controllers\Api\Admin\DonationApplicationController as AdminDonationApplicationController;
+use App\Http\Controllers\Api\Admin\DonationController as AdminDonationController;
 
-// Apunta a Api/Login/AuthController
+// --- RUTAS PÚBLICAS Y DE AUTENTICACIÓN ---
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
-// Apunta a Api/Public/PublicContentController
 Route::prefix('public')->name('public.')->group(function () {
     Route::get('/animals', [PublicContentController::class, 'listAnimals'])->name('animals.index');
     Route::get('/animals/{animal}', [PublicContentController::class, 'showAnimal'])->name('animals.show');
     Route::get('/donation-items', [PublicContentController::class, 'listDonationItems'])->name('donation-items.index');
 });
+
+// --- RUTAS PARA USUARIOS AUTENTICADOS (ROL 'User') ---
 Route::middleware('auth:sanctum')->group(function () {
-    // Gestión de Sesión y Perfil (usa el AuthController de Login)
     Route::post('/logout', [AuthController::class, 'logout']);
     Route::get('/profile', [AuthController::class, 'userProfile']);
 
-    // Acciones del Usuario (apuntan a controladores en Api/User)
     Route::prefix('user')->name('user.')->group(function () {
         Route::get('/my-applications', [UserApplicationController::class, 'getMyApplications'])->name('applications.mine');
         Route::post('/adoption-applications', [UserApplicationController::class, 'storeAdoption'])->name('applications.storeAdoption');
         Route::post('/volunteer-applications', [UserApplicationController::class, 'storeVolunteer'])->name('applications.storeVolunteer');
-        Route::post('/donations', [UserDonationController::class, 'store'])->name('donations.store');
         Route::post('/donation-applications', [UserDonationApplicationController::class, 'store'])->name('donations.apply');
     });
 });
-Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
-    // Gestión de Usuarios (Apunta a Api/Admin/AdminUserController)
-    Route::apiResource('users', AdminUserController::class);
+// --- GESTIÓN DE USUARIOS (SOLO SUPER ADMIN) ---
+Route::middleware(['auth:sanctum', 'permission:manage users'])
+    ->prefix('superadmin')
+    ->name('superadmin.')
+    ->group(function () {
+        Route::apiResource('users', AdminUserController::class);
+    });
 
-    // Gestión de Animales (Apunta a Api/Animals/*)
-    Route::apiResource('animals', AnimalController::class);
-    Route::apiResource('species', SpeciesController::class);
-    Route::apiResource('breeds', BreedController::class);
+// --- GESTIÓN DEL REFUGIO Y SOLICITUDES (SOLO ADMIN) ---
+Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|manage donation_catalog|review applications'])
+    ->prefix('admin')
+    ->name('admin.')
+    ->group(function () {
     
-    // Gestión de Refugios (Apunta a Api/Shelters/*)
-    Route::apiResource('shelters', ShelterController::class);
+        // Gestión de Animales y relacionados
+        Route::apiResource('animals', AnimalController::class);
+        Route::apiResource('species', SpeciesController::class);
+        Route::apiResource('breeds', BreedController::class);
+        
+        // Gestión de Refugios
+        Route::apiResource('shelters', ShelterController::class);
 
-    // Gestión de Catálogos (Apunta a Api/Donations/* y Api/Applications/*)
-    Route::apiResource('donation-items-catalog', DonationItemsCatalogController::class);
-    Route::apiResource('application-statuses', ApplicationStatusController::class);
+        // Gestión de Catálogos
+        Route::apiResource('donation-items-catalog', DonationItemsCatalogController::class);
+        Route::apiResource('application-statuses', ApplicationStatusController::class);
 
-    // Revisión de Solicitudes (Apunta a Api/Applications/*)
-    Route::get('adoption-applications', [AdoptionApplicationController::class, 'index'])->name('adoption-applications.index');
-    Route::get('adoption-applications/{application}', [AdoptionApplicationController::class, 'show'])->name('adoption-applications.show');
-    Route::put('adoption-applications/{application}/status', [AdoptionApplicationController::class, 'updateStatus'])->name('adoption-applications.updateStatus');
+        // Revisión de Solicitudes
+        Route::get('adoption-applications', [AdoptionApplicationController::class, 'index']);
+        Route::get('adoption-applications/{application}', [AdoptionApplicationController::class, 'show']);
+        Route::put('adoption-applications/{application}/status', [AdoptionApplicationController::class, 'updateStatus']);
 
-    Route::get('volunteer-applications', [VolunteerApplicationController::class, 'index'])->name('volunteer-applications.index');
-    Route::get('volunteer-applications/{application}', [VolunteerApplicationController::class, 'show'])->name('volunteer-applications.show');
-    Route::put('volunteer-applications/{application}/status', [VolunteerApplicationController::class, 'updateStatus'])->name('volunteer-applications.updateStatus');
+        Route::get('volunteer-applications', [VolunteerApplicationController::class, 'index']);
+        Route::get('volunteer-applications/{application}', [VolunteerApplicationController::class, 'show']);
+        Route::put('volunteer-applications/{application}/status', [VolunteerApplicationController::class, 'updateStatus']);
+        
+        Route::get('donation-applications', [AdminDonationApplicationController::class, 'index']);
+        Route::get('donation-applications/{application}', [AdminDonationApplicationController::class, 'show']);
+        Route::put('donation-applications/{application}/status', [AdminDonationApplicationController::class, 'updateStatus']);
 
-    Route::get('donation-applications', [AdminDonationApplicationController::class, 'index'])->name('donation-applications.index');
-    Route::get('donation-applications/{application}', [AdminDonationApplicationController::class, 'show'])->name('donation-applications.show');
-    Route::put('donation-applications/{application}/status', [AdminDonationApplicationController::class, 'updateStatus'])->name('donation-applications.updateStatus');
-
-    // Visualización de Historial de Donaciones (Apunta a Api/Donations/*)
-    Route::apiResource('donations', AdminDonationController::class)->only(['index', 'show']);
+        // Historial de Donaciones Aprobadas
+        Route::apiResource('donations', AdminDonationController::class)->only(['index', 'show']);
 });
