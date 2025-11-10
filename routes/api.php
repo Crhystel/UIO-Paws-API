@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\Applications\ApplicationStatusController;
 use App\Http\Controllers\Api\Applications\AdoptionApplicationController;
 use App\Http\Controllers\Api\Applications\VolunteerApplicationController;
 use App\Http\Controllers\Api\Donations\DonationController as AdminDonationControl;
+use App\Http\Controllers\Api\User\UserDonationApplicationController;
+use App\Http\Controllers\Api\Applications\DonationApplicationController as AdminDonationApplicationController;
 
 // Apunta a Api/Login/AuthController
 Route::post('/register', [AuthController::class, 'register']);
@@ -37,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/adoption-applications', [UserApplicationController::class, 'storeAdoption'])->name('applications.storeAdoption');
         Route::post('/volunteer-applications', [UserApplicationController::class, 'storeVolunteer'])->name('applications.storeVolunteer');
         Route::post('/donations', [UserDonationController::class, 'store'])->name('donations.store');
+        Route::post('/donation-applications', [UserDonationApplicationController::class, 'store'])->name('donations.apply');
     });
 });
 Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -63,6 +66,10 @@ Route::middleware(['auth:sanctum', 'role:admin'])->prefix('admin')->name('admin.
     Route::get('volunteer-applications', [VolunteerApplicationController::class, 'index'])->name('volunteer-applications.index');
     Route::get('volunteer-applications/{application}', [VolunteerApplicationController::class, 'show'])->name('volunteer-applications.show');
     Route::put('volunteer-applications/{application}/status', [VolunteerApplicationController::class, 'updateStatus'])->name('volunteer-applications.updateStatus');
+
+    Route::get('donation-applications', [AdminDonationApplicationController::class, 'index'])->name('donation-applications.index');
+    Route::get('donation-applications/{application}', [AdminDonationApplicationController::class, 'show'])->name('donation-applications.show');
+    Route::put('donation-applications/{application}/status', [AdminDonationApplicationController::class, 'updateStatus'])->name('donation-applications.updateStatus');
 
     // Visualización de Historial de Donaciones (Apunta a Api/Donations/*)
     Route::apiResource('donations', AdminDonationController::class)->only(['index', 'show']);
