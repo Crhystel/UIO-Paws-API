@@ -11,7 +11,6 @@
     {
         public function register(Request $request)
         {
-<<<<<<< HEAD
             try {
                 $validated = $request->validate([
                     'first_name' => 'required|string|max:255',
@@ -43,21 +42,6 @@
                 return response()->json([
                     'message' => 'Ocurrió un error inesperado durante el registro.'], 500);
             }
-=======
-            $request->validate([
-                'name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8|confirmed',
-            ]);
-
-            User::create([
-                'name' => $request->name,
-                'email' => $request->email,
-                'password' => Hash::make($request->password),
-            ]);
-
-            return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
->>>>>>> c4804f8 (rearranging controller files)
         }
 
         public function login(Request $request)
@@ -68,6 +52,7 @@
             ]);
             $user = User::where('email', $request->email)->first();
 <<<<<<< HEAD
+<<<<<<< HEAD
             if (!$user) {
                 return response()->json(['error' => 'Usuario no encontrado en la base de datos.'], 404);
             }
@@ -77,6 +62,13 @@
 
             if (!$user || !Hash::check($request->password, $user->password)) {
 >>>>>>> c4804f8 (rearranging controller files)
+=======
+            if (!$user) {
+                return response()->json(['error' => 'Usuario no encontrado en la base de datos.'], 404);
+            }
+
+            if (!$user || !Hash::check($request->password, $user->password_hash)) {
+>>>>>>> 5d3b729 (fixing error on password property for login)
                 throw ValidationException::withMessages([
                     'email' => ['Las credenciales son incorrectas.'],
                 ]);
