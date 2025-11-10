@@ -12,10 +12,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
-use App\Models\TermsAndConditions;   
-use App\Models\UserTermAcceptance;
-use App\Models\DonationApplication;
-
 
 class ApplicationController extends Controller
 {
@@ -24,7 +20,7 @@ class ApplicationController extends Controller
         $user = Auth::user();
 
         $adoptions = AdoptionApplication::where('id_user', $user->id_user)
-            ->with(['animal.photos', 'status:id_status,status_name']) 
+            ->with(['animal:id_animal,animal_name', 'status:id_status,status_name']) 
             ->latest('application_date')
             ->get();
 
@@ -32,15 +28,10 @@ class ApplicationController extends Controller
             ->with('status:id_status,status_name')
             ->latest('application_date')
             ->get();
-        $donations = DonationApplication::where('id_user', $user->id_user)
-            ->with(['status:id_status,status_name', 'items']) 
-            ->latest('application_date')
-            ->get();
 
         return response()->json([
             'adoption_applications' => $adoptions,
             'volunteer_applications' => $volunteering,
-            'donation_applications' => $donations,
         ]);
     }
     public function storeAdoption(Request $request)
@@ -75,7 +66,6 @@ class ApplicationController extends Controller
             'home_info.behavioral_issue_plan' => 'required|string',
             'home_info.vet_reference_name' => 'nullable|string|max:255',
             'home_info.vet_reference_phone' => 'nullable|string|max:20',
-            'terms_accepted' => 'required|accepted',
         ]);
 
         $pendingStatus = ApplicationStatus::where('status_name', 'Pendiente')->first();
@@ -96,14 +86,6 @@ class ApplicationController extends Controller
             $animal = Animal::find($validated['id_animal']);
             $animal->status = 'En proceso';
             $animal->save();
-            $latestTerms = \App\Models\TermsAndConditions::latest('publication_date')->first();
-            if ($latestTerms) {
-                UserTermAcceptance::create([
-                    'id_user' => Auth::id(),
-                    'id_terms_conditions' => $latestTerms->id_terms_conditions,
-                    'acceptance_date' => now(),
-                ]);
-            }
             DB::commit();
 
             return response()->json(['message' => 'Solicitud de adopción enviada con éxito. Nos pondremos en contacto contigo pronto.'], 201);
