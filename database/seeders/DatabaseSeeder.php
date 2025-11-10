@@ -8,12 +8,14 @@ use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
+    /**
+     * Seed the application's database.
+     */
     public function run(): void
     {
         $this->call([
-            RolesAndPermissionsSeeder::class,
-            ApplicationStatusSeeder::class,
-            AdminUserSeeder::class,
+            RoleAndPermissionSeeder::class, 
+            ApplicationStatusSeeder::class, 
         ]);
         $superAdmin = User::create([
             'first_name' => 'Super',
