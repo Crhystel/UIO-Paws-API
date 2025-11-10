@@ -33,8 +33,11 @@
                 'password' => 'required',
             ]);
             $user = User::where('email', $request->email)->first();
+            if (!$user) {
+                return response()->json(['error' => 'Usuario no encontrado en la base de datos.'], 404);
+            }
 
-            if (!$user || !Hash::check($request->password, $user->password)) {
+            if (!$user || !Hash::check($request->password, $user->password_hash)) {
                 throw ValidationException::withMessages([
                     'email' => ['Las credenciales son incorrectas.'],
                 ]);
