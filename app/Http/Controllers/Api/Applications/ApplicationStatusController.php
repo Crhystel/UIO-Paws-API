@@ -30,6 +30,6 @@ class ApplicationStatusController extends Controller
     }
     public function destroy(ApplicationStatus $applicationStatus){
         $applicationStatus->delete();
-        return response()->json($applicationStatus,204);
+        return response()->json(null,204);
     }
 }

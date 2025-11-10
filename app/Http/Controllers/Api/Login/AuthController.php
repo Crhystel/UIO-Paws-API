@@ -11,6 +11,7 @@
     {
         public function register(Request $request)
         {
+<<<<<<< HEAD
             try {
                 $validated = $request->validate([
                     'first_name' => 'required|string|max:255',
@@ -31,6 +32,21 @@
                 $user = User::create($createData);
                 
                 $user->assignRole('User'); 
+=======
+            $validated = $request->validate([
+                'first_name' => 'required|string|max:255',
+                'last_name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+
+            User::create([
+                'first_name' => $validated['first_name'],
+                'last_name' => $validated['last_name'],
+                'email' => $validated['email'],
+                'password_hash' => Hash::make($validated['password']),
+            ]);
+>>>>>>> 02fb4e0 (fixing typos, variable name problems, and removing unnecessary files)
 
                 return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
 
