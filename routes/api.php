@@ -1,7 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Api\Login\AuthController;
+use App\Http\Controllers\Api\AuthController;
 use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\User\ApplicationController as UserApplicationController;
 use App\Http\Controllers\Api\User\UserDonationApplicationController;
@@ -22,7 +22,7 @@ use App\Http\Controllers\Api\Volunteers\VolunteerOpportunityController;
 use App\Http\Controllers\Api\User\ProfileController;
 use App\Http\Controllers\Api\Admin\ApplicationController as AdminApplicationController;
 
-// Rutas Públicas 
+// Autenticación (Login/Registro)
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
@@ -38,6 +38,7 @@ Route::prefix('public')->name('public.')->group(function () {
 
 // --- RUTAS PARA USUARIOS AUTENTICADOS ---
 Route::middleware('auth:sanctum')->group(function () {
+    // Gestión de Sesión y Perfil
     Route::post('/logout', [AuthController::class, 'logout']);
     
     // RUTA PRINCIPAL DE PERFIL
