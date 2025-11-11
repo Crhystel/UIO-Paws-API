@@ -9,7 +9,7 @@ class Species extends Model
 {
     use HasFactory;
     protected $primaryKey = 'id_species';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = ['species_name'];
 }
