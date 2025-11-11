@@ -11,7 +11,7 @@ class DonationItem extends Model
 
     protected $table = 'donation_item';
     protected $primaryKey = 'id_donation_item';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = ['id_donation', 'id_donation_item_catalog', 'quantity'];
 
