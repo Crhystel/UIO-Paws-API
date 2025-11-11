@@ -11,7 +11,7 @@ class ApplicationStatus extends Model
 
     protected $table = 'application_statuses';
     protected $primaryKey = 'id_status';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = ['status_name'];
 }

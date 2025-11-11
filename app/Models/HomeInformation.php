@@ -11,7 +11,7 @@ class HomeInformation extends Model
 
     protected $table = 'home_information';
     protected $primaryKey = 'id_home_info';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = [
         'id_adoption_application', 'dwelling_type', 'has_yard', 'yard_enclosure_type', 'wall_material',
