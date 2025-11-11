@@ -11,7 +11,7 @@ class VolunteerApplication extends Model
 
     protected $table = 'volunteer_applications';
     protected $primaryKey = 'id_volunteer_applications';
-    public $timestamps = true;
+    public $timestamps = false;
     protected $fillable = ['motivation', 'application_date', 'id_user', 'id_status', 'reviewed_by_id_admin'];
 
     public function user()
