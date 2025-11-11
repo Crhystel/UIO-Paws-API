@@ -10,7 +10,7 @@ class UserTermAcceptance extends Model
 
     protected $table = 'user_term_acceptance';
     protected $primaryKey = 'id_user_acceptance';
-    public $timestamps = true;
+    public $timestamps = false;
     protected $fillable = ['id_user', 'id_terms_conditions', 'acceptance_date'];
 
     public function user()

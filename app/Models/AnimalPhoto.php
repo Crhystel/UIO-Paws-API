@@ -11,7 +11,7 @@ class AnimalPhoto extends Model
 
     protected $table = 'animal_photos';
     protected $primaryKey = 'id_animal_photos';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = ['image_url', 'id_animal'];
 
