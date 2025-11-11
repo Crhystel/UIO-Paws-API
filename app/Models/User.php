@@ -60,6 +60,15 @@ class User extends Authenticatable
             'password_hash' => 'hashed',
         ];
     }
+    /**
+     * Get the password for the user.
+     *
+     * @return string
+     */
+    public function getAuthPassword()
+    {
+        return $this->password_hash;
+    }
     public function address()
     {
         return $this->belongsTo(Address::class, 'id_address');
