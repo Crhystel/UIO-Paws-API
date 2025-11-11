@@ -6,16 +6,16 @@ use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\User\ApplicationController as UserApplicationController;
 use App\Http\Controllers\Api\User\DonationApplicationController as UserDonationApplicationController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
-use App\Http\Controllers\Api\Admin\AnimalController;
-use App\Http\Controllers\Api\Admin\SpeciesController;
-use App\Http\Controllers\Api\Admin\BreedController;
-use App\Http\Controllers\Api\Admin\ShelterController;
-use App\Http\Controllers\Api\Admin\DonationItemsCatalogController;
-use App\Http\Controllers\Api\Admin\ApplicationStatusController;
-use App\Http\Controllers\Api\Admin\AdoptionApplicationController;
-use App\Http\Controllers\Api\Admin\VolunteerApplicationController;
-use App\Http\Controllers\Api\Admin\DonationApplicationController as AdminDonationApplicationController;
-use App\Http\Controllers\Api\Admin\DonationController as AdminDonationController;
+use App\Http\Controllers\Api\Animals\AnimalController;
+use App\Http\Controllers\Api\Animals\SpeciesController;
+use App\Http\Controllers\Api\Animals\BreedController;
+use App\Http\Controllers\Api\Shelters\ShelterController;
+use App\Http\Controllers\Api\Donations\DonationItemsCatalogController;
+use App\Http\Controllers\Api\Applications\ApplicationStatusController;
+use App\Http\Controllers\Api\Applications\AdoptionApplicationController;
+use App\Http\Controllers\Api\Applications\VolunteerApplicationController;
+use App\Http\Controllers\Api\Applications\DonationApplicationController as AdminDonationApplicationController;
+use App\Http\Controllers\Api\Donations\DonationController as AdminDonationController;
 
 // --- RUTAS PÚBLICAS Y DE AUTENTICACIÓN ---
 Route::post('/register', [AuthController::class, 'register']);
