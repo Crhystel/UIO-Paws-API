@@ -11,21 +11,37 @@
     {
         public function register(Request $request)
         {
-            $validated = $request->validate([
-                'first_name' => 'required|string|max:255',
-                'last_name' => 'required|string|max:255',
-                'email' => 'required|string|email|max:255|unique:users',
-                'password' => 'required|string|min:8|confirmed',
-            ]);
+            try {
+                $validated = $request->validate([
+                    'first_name' => 'required|string|max:255',
+                    'middle_name' => 'nullable|string|max:255',
+                    'last_name' => 'required|string|max:255',
+                    'second_last_name' => 'nullable|string|max:255',
+                    'document_type' => 'required|string|max:255',
+                    'document_number' => 'required|string|max:255',
+                    'phone' => 'required|string|max:20',
+                    'email' => 'required|string|email|max:255|unique:users',
+                    'password' => 'required|string|min:8', 
+                ]);
+                $createData = $validated;
+                $createData['password_hash'] = Hash::make($validated['password']);
+                unset($createData['password']);
+                $createData['is_active'] = true;
 
-            User::create([
-                'first_name' => $validated['first_name'],
-                'last_name' => $validated['last_name'],
-                'email' => $validated['email'],
-                'password_hash' => Hash::make($validated['password']),
-            ]);
+                $user = User::create($createData);
+                
+                $user->assignRole('User'); 
 
-            return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
+                return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
+
+            } catch (ValidationException $e) {
+                return response()->json(['message' => 'Datos inválidos.', 'errors' => $e->errors()], 422);
+            
+            } catch (\Exception $e) {
+                Log::error('Excepción durante el registro: ' . $e->getMessage());
+                return response()->json([
+                    'message' => 'Ocurrió un error inesperado durante el registro.'], 500);
+            }
         }
 
         public function login(Request $request)
