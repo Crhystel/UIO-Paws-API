@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr; 
 =======
 use Illuminate\Http\Request;
-use App\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\Shelter;
 >>>>>>> c4804f8 (rearranging controller files)
 
