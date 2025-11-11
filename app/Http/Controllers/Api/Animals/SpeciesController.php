@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Animals;
 
 use Illuminate\Http\Request;
-use App\Controllers\Controller;
+use App\Http\Controllers\Controller; 
 use App\Models\Species;
 
 class SpeciesController extends Controller
