@@ -59,40 +59,8 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password_hash' => 'hashed',
+            'password_hash' => 'hashed',
         ];
-    }
-    /**
-     * Get the password for the user.
-     *
-     * @return string
-     */
-    public function getAuthPassword()
-    {
-        return $this->password_hash;
-    }
-    public function address()
-    {
-        return $this->belongsTo(Address::class, 'id_address');
-    }
-    public function donations()
-    {
-        return $this->hasMany(Donation::class, 'id_user');
-    }
-    public function emergencyContacts()
-    {
-        return $this->hasMany(EmergencyContact::class, 'id_user');
-    }
-    public function volunteerApplications()
-    {
-        return $this->hasMany(VolunteerApplication::class, 'id_user');
-    }
-    public function adoptionApplications()
-    {
-        return $this->hasMany(AdoptionApplication::class, 'id_user');
-    }
-    public function termAcceptances()
-    {
-        return $this->hasMany(UserTermAcceptance::class, 'id_user');
     }
     public function address()
     {
