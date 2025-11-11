@@ -11,7 +11,7 @@ class EmergencyContact extends Model
 
     protected $table = 'emergency_contacts';
     protected $primaryKey = 'id_emergency_contacts';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = ['id_user', 'contact_name', 'contact_phone', 'relationship'];
 
