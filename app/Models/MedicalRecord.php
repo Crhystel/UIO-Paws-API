@@ -11,7 +11,7 @@ class MedicalRecord extends Model
 
     protected $table = 'medical_records';
     protected $primaryKey = 'id_medical_records';
-    public $timestamps = true;
+    public $timestamps = false;
 
     protected $fillable = ['event_date', 'description', 'event_type', 'veterinarian_name', 'medication', 'id_animal'];
 
