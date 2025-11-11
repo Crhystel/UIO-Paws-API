@@ -8,7 +8,7 @@ class AdoptionApplication extends Model{
     use HasFactory;
     protected $table='adoption_applications';
     protected $primaryKey='id_adoption_application';
-    public $timestamps = false;
+    public $timestamps = true;
     protected $fillable=[
         'application_date',
         'id_user',

@@ -11,7 +11,7 @@ class TermsAndConditions extends Model
 
     protected $table = 'terms_and_conditions';
     protected $primaryKey = 'id_terms_conditions';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = ['full_text', 'version', 'publication_date'];
 }

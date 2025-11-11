@@ -11,7 +11,7 @@ class Shelter extends Model
 
     protected $table = 'shelters';
     protected $primaryKey = 'id_shelter';
-    public $timestamps = false;
+    public $timestamps = true;
 
     protected $fillable = ['shelter_name', 'contact_email', 'phone', 'description', 'id_address'];
 
