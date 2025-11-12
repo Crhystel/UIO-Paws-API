@@ -16,6 +16,8 @@ use App\Http\Controllers\Api\Applications\AdoptionApplicationController;
 use App\Http\Controllers\Api\Applications\VolunteerApplicationController;
 use App\Http\Controllers\Api\Applications\DonationApplicationController as AdminDonationApplicationController;
 use App\Http\Controllers\Api\Donations\DonationController as AdminDonationController;
+use App\Http\Controllers\Api\Animals\AnimalPhotoController;
+use App\Http\Controllers\Api\Animals\MedicalRecordController;
 
 // --- RUTAS PÚBLICAS Y DE AUTENTICACIÓN ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -86,5 +88,6 @@ Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|ma
         Route::delete('photos/{photo}', [AnimalPhotoController::class, 'destroy'])->name('api.admin.photos.destroy');
         //Manejar el historial médico de los animales
         Route::post('animals/{animal}/medical-records', [MedicalRecordController::class, 'store'])->name('api.admin.animals.records.store');
+        Route::put('medical-records/{record}', [MedicalRecordController::class, 'update'])->name('api.admin.records.update');
         Route::delete('medical-records/{record}', [MedicalRecordController::class, 'destroy'])->name('api.admin.records.destroy');
 });
