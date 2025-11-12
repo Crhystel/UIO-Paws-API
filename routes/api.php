@@ -124,4 +124,11 @@ Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|ma
         // HISTORIAL DE DONACIONES (Aprobadas)
         // -----------------------------------------------------------------
         Route::apiResource('donations', AdminDonationController::class)->only(['index', 'show']);
+
+        //Manejar fotos de animales
+        Route::post('animals/{animal}/photos', [AnimalPhotoController::class, 'store'])->name('api.admin.animals.photos.store');
+        Route::delete('photos/{photo}', [AnimalPhotoController::class, 'destroy'])->name('api.admin.photos.destroy');
+        //Manejar el historial médico de los animales
+        Route::post('animals/{animal}/medical-records', [MedicalRecordController::class, 'store'])->name('api.admin.animals.records.store');
+        Route::delete('medical-records/{record}', [MedicalRecordController::class, 'destroy'])->name('api.admin.records.destroy');
 });
