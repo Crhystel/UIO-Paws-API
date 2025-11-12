@@ -130,5 +130,6 @@ Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|ma
         Route::delete('photos/{photo}', [AnimalPhotoController::class, 'destroy'])->name('api.admin.photos.destroy');
         //Manejar el historial médico de los animales
         Route::post('animals/{animal}/medical-records', [MedicalRecordController::class, 'store'])->name('api.admin.animals.records.store');
+        Route::put('medical-records/{record}', [MedicalRecordController::class, 'update'])->name('api.admin.records.update');
         Route::delete('medical-records/{record}', [MedicalRecordController::class, 'destroy'])->name('api.admin.records.destroy');
 });
