@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Animal;
 use App\Models\DonationItemsCatalog;
 use Illuminate\Http\Request;
+use App\Models\VolunteerOpportunity;
 
 class PublicContentController extends Controller
 {
@@ -55,5 +56,9 @@ class PublicContentController extends Controller
     public function listDonationItems()
     {
         return DonationItemsCatalog::orderBy('item_name')->get();
+    }
+    public function listVolunteerOpportunities()
+    {
+        return VolunteerOpportunity::where('is_active', true)->orderBy('title')->get();
     }
 }
