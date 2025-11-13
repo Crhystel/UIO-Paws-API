@@ -18,6 +18,7 @@ use App\Http\Controllers\Api\Applications\DonationApplicationController as Admin
 use App\Http\Controllers\Api\Donations\DonationController as AdminDonationController;
 use App\Http\Controllers\Api\Animals\AnimalPhotoController;
 use App\Http\Controllers\Api\Animals\MedicalRecordController;
+use App\Http\Controllers\Api\Volunteers\VolunteerOpportunityController;
 
 // --- RUTAS PÚBLICAS Y DE AUTENTICACIÓN ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -27,6 +28,7 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/animals', [PublicContentController::class, 'listAnimals'])->name('animals.index');
     Route::get('/animals/{animal}', [PublicContentController::class, 'showAnimal'])->name('animals.show');
     Route::get('/donation-items', [PublicContentController::class, 'listDonationItems'])->name('donation-items.index');
+    Route::get('/volunteer-opportunities', [PublicContentController::class, 'listVolunteerOpportunities'])->name('volunteer-opportunities.index');
 });
 
 // --- RUTAS PARA USUARIOS AUTENTICADOS (ROL 'User') ---
@@ -49,7 +51,7 @@ Route::middleware(['auth:sanctum', 'permission:manage users'])
         Route::apiResource('users', AdminUserController::class);
     });
 
-// --- GESTIÓN DEL REFUGIO Y SOLICITUDES (SOLO ADMIN) ---
+// --- GESTIÓN  Y SOLICITUDES (SOLO ADMIN) ---
 Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|manage donation_catalog|review applications'])
     ->prefix('admin')
     ->name('admin.')
@@ -91,4 +93,6 @@ Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|ma
         Route::post('animals/{animal}/medical-records', [MedicalRecordController::class, 'store'])->name('api.admin.animals.records.store');
         Route::put('medical-records/{record}', [MedicalRecordController::class, 'update'])->name('api.admin.records.update');
         Route::delete('medical-records/{record}', [MedicalRecordController::class, 'destroy'])->name('api.admin.records.destroy');
+        // Gestión de Oportunidades de Voluntariado
+        Route::apiResource('volunteer-opportunities', VolunteerOpportunityController::class);   
 });
