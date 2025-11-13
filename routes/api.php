@@ -133,4 +133,6 @@ Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|ma
         Route::post('animals/{animal}/medical-records', [MedicalRecordController::class, 'store'])->name('api.admin.animals.records.store');
         Route::put('medical-records/{record}', [MedicalRecordController::class, 'update'])->name('api.admin.records.update');
         Route::delete('medical-records/{record}', [MedicalRecordController::class, 'destroy'])->name('api.admin.records.destroy');
+        // Gestión de Oportunidades de Voluntariado
+        Route::apiResource('volunteer-opportunities', VolunteerOpportunityController::class);   
 });

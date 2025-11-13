@@ -88,4 +88,8 @@ class PublicContentController extends Controller
     {
         return VolunteerOpportunity::where('is_active', true)->orderBy('title')->get();
     }
+    public function listVolunteerOpportunities()
+    {
+        return VolunteerOpportunity::where('is_active', true)->orderBy('title')->get();
+    }
 }
