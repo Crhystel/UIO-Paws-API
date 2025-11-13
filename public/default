@@ -1,0 +1,24 @@
+server {
+    # Listen on port 8080
+    listen 8080;
+    listen [::]:8080;
+
+    # The location of our projects public directory.
+    root /home/site/wwwroot/public;
+
+    # Add index.php to the list if you are using PHP.
+    index index.php index.html index.htm;
+
+    server_name _;
+
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+
+    # Pass the PHP scripts to FastCGI server listening on 127.0.0.1:9000
+    location ~ \.php$ {
+        include fastcgi_params;
+        fastcgi_pass 127.0.0.1:9000;
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+    }
+}
