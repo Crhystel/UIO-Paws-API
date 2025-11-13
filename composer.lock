@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a409226e97e0d285afb293e39122960b",
+    "content-hash": "b5d3fb5b74cdf70eb29e4067b3318e4b",
     "packages": [
         {
             "name": "brick/math",
@@ -1026,7 +1026,13 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+<<<<<<< HEAD
             "license": ["MIT"],
+=======
+            "license": [
+                "MIT"
+            ],
+>>>>>>> 9d74d54 (fixing and adding new library to manage animal photos)
             "authors": [
                 {
                     "name": "Oliver Vogel",
@@ -1036,7 +1042,16 @@
             ],
             "description": "Native PHP GIF Encoder/Decoder",
             "homepage": "https://github.com/intervention/gif",
+<<<<<<< HEAD
             "keywords": ["animation", "gd", "gif", "image"],
+=======
+            "keywords": [
+                "animation",
+                "gd",
+                "gif",
+                "image"
+            ],
+>>>>>>> 9d74d54 (fixing and adding new library to manage animal photos)
             "support": {
                 "issues": "https://github.com/Intervention/gif/issues",
                 "source": "https://github.com/Intervention/gif/tree/4.2.2"
@@ -1093,7 +1108,9 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": ["MIT"],
+            "license": [
+                "MIT"
+            ],
             "authors": [
                 {
                     "name": "Oliver Vogel",
