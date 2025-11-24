@@ -11,7 +11,8 @@ class ProfileController extends Controller
 {
     public function getEmergencyContacts()
     {
-        return EmergencyContact::where('id_user', Auth::id())->get();
+        $contacts = EmergencyContact::where('id_user', Auth::id())->get();
+        return response()->json($contacts);
     }
 
     public function storeEmergencyContact(Request $request)

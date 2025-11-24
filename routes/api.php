@@ -19,6 +19,7 @@ use App\Http\Controllers\Api\Donations\DonationController as AdminDonationContro
 use App\Http\Controllers\Api\Animals\AnimalPhotoController;
 use App\Http\Controllers\Api\Animals\MedicalRecordController;
 use App\Http\Controllers\Api\Volunteers\VolunteerOpportunityController;
+use App\Http\Controllers\Api\User\ProfileController;
 
 // --- RUTAS PÚBLICAS Y DE AUTENTICACIÓN ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -44,6 +45,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::get('/emergency-contacts', [ProfileController::class, 'getEmergencyContacts']);
         Route::post('/emergency-contacts', [ProfileController::class, 'storeEmergencyContact']);
         Route::delete('/emergency-contacts/{contact}', [ProfileController::class, 'destroyEmergencyContact']);
+        Route::get('/emergency-contacts', [ProfileController::class, 'getEmergencyContacts'])->name('contacts.index');
+        Route::post('/emergency-contacts', [ProfileController::class, 'storeEmergencyContact'])->name('contacts.store');
+        Route::delete('/emergency-contacts/{contact}', [ProfileController::class, 'destroyEmergencyContact'])->name('contacts.destroy');
     });
 });
 // --- GESTIÓN DE USUARIOS (SOLO SUPER ADMIN) ---
