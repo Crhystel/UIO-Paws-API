@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Login\AuthController;
 use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\User\ApplicationController as UserApplicationController;
-use App\Http\Controllers\Api\User\DonationApplicationController as UserDonationApplicationController;
+use App\Http\Controllers\Api\User\UserDonationApplicationController;
 use App\Http\Controllers\Api\Admin\AdminUserController;
 use App\Http\Controllers\Api\Animals\AnimalController;
 use App\Http\Controllers\Api\Animals\SpeciesController;
@@ -20,6 +20,7 @@ use App\Http\Controllers\Api\Animals\AnimalPhotoController;
 use App\Http\Controllers\Api\Animals\MedicalRecordController;
 use App\Http\Controllers\Api\Volunteers\VolunteerOpportunityController;
 use App\Http\Controllers\Api\User\ProfileController;
+use App\Http\Controllers\Api\Admin\ApplicationController as AdminApplicationController;
 
 // --- RUTAS PÚBLICAS Y DE AUTENTICACIÓN ---
 Route::post('/register', [AuthController::class, 'register']);
@@ -88,7 +89,8 @@ Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|ma
         Route::get('donation-applications', [AdminDonationApplicationController::class, 'index']);
         Route::get('donation-applications/{application}', [AdminDonationApplicationController::class, 'show']);
         Route::put('donation-applications/{application}/status', [AdminDonationApplicationController::class, 'updateStatus']);
-
+        // Resumen de Solicitudes
+        Route::get('/applications-summary', [AdminApplicationController::class, 'getApplicationSummary'])->name('applications.summary');
         // Historial de Donaciones Aprobadas
         Route::apiResource('donations', AdminDonationController::class)->only(['index', 'show']);
 
