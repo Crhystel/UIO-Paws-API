@@ -22,12 +22,25 @@ class AdoptionApplicationController extends Controller
         'id_status' => 'required|exists:application_statuses,id_status',
         'admin_notes' => 'nullable|string',
         ]);
-
+        $animal = $application->animal;
+        $newStatus = ApplicationStatus::find($validated['id_status']);
         $application->update([
         'id_status' => $validated['id_status'],
         'admin_notes' => $validated['admin_notes'],
         'approved_by_id_admin' => Auth::id(),
         ]);
+        if ($newStatus && $newStatus->status_name === 'Rechazado') {
+            if ($animal) {
+                $animal->status = 'Disponible';
+                $animal->save();
+            }
+        }
+        if ($newStatus && $newStatus->status_name === 'Aprobado') {
+            if ($animal) {
+                $animal->status = 'Adoptado';
+                $animal->save();
+            }
+        }
         return response()->json($application->load(['user', 'animal', 'status']));
     }
 }
