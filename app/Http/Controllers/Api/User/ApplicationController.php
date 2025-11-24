@@ -12,6 +12,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use App\Models\TermsAndConditions;   
+use App\Models\UserTermAcceptance;
 
 class ApplicationController extends Controller
 {
@@ -89,7 +91,7 @@ class ApplicationController extends Controller
             $animal->save();
             $latestTerms = \App\Models\TermsAndConditions::latest('publication_date')->first();
             if ($latestTerms) {
-                \App\Models\UserTermAcceptance::create([
+                UserTermAcceptance::create([
                     'id_user' => Auth::id(),
                     'id_terms_conditions' => $latestTerms->id_terms_conditions,
                     'acceptance_date' => now(),
