@@ -14,6 +14,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use App\Models\TermsAndConditions;   
 use App\Models\UserTermAcceptance;
+use App\Models\DonationApplication;
+
 
 class ApplicationController extends Controller
 {
@@ -30,10 +32,15 @@ class ApplicationController extends Controller
             ->with('status:id_status,status_name')
             ->latest('application_date')
             ->get();
+        $donations = DonationApplication::where('id_user', $user->id_user)
+            ->with('status:id_status,status_name')
+            ->latest('application_date')
+            ->get();
 
         return response()->json([
             'adoption_applications' => $adoptions,
             'volunteer_applications' => $volunteering,
+            'donation_applications' => $donations,
         ]);
     }
     public function storeAdoption(Request $request)
