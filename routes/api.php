@@ -41,6 +41,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::post('/adoption-applications', [UserApplicationController::class, 'storeAdoption'])->name('applications.storeAdoption');
         Route::post('/volunteer-applications', [UserApplicationController::class, 'storeVolunteer'])->name('applications.storeVolunteer');
         Route::post('/donation-applications', [UserDonationApplicationController::class, 'store'])->name('donations.apply');
+        Route::get('/emergency-contacts', [ProfileController::class, 'getEmergencyContacts']);
+        Route::post('/emergency-contacts', [ProfileController::class, 'storeEmergencyContact']);
+        Route::delete('/emergency-contacts/{contact}', [ProfileController::class, 'destroyEmergencyContact']);
     });
 });
 // --- GESTIÓN DE USUARIOS (SOLO SUPER ADMIN) ---

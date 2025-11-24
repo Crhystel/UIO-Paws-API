@@ -66,6 +66,7 @@ class ApplicationController extends Controller
             'home_info.behavioral_issue_plan' => 'required|string',
             'home_info.vet_reference_name' => 'nullable|string|max:255',
             'home_info.vet_reference_phone' => 'nullable|string|max:20',
+            'terms_accepted' => 'required|accepted',
         ]);
 
         $pendingStatus = ApplicationStatus::where('status_name', 'Pendiente')->first();
@@ -86,7 +87,14 @@ class ApplicationController extends Controller
             $animal = Animal::find($validated['id_animal']);
             $animal->status = 'En proceso';
             $animal->save();
-
+            $latestTerms = \App\Models\TermsAndConditions::latest('publication_date')->first();
+            if ($latestTerms) {
+                \App\Models\UserTermAcceptance::create([
+                    'id_user' => Auth::id(),
+                    'id_terms_conditions' => $latestTerms->id_terms_conditions,
+                    'acceptance_date' => now(),
+                ]);
+            }
             DB::commit();
 
             return response()->json(['message' => 'Solicitud de adopción enviada con éxito. Nos pondremos en contacto contigo pronto.'], 201);
