@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\AdoptionApplication;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\ApplicationStatus;
 
 class AdoptionApplicationController extends Controller
 {
@@ -16,29 +17,28 @@ class AdoptionApplicationController extends Controller
     {
         return $application->load(['user', 'animal.breed.species', 'status', 'homeInformation']);
     }
-    public function updateStatus(Request $request, AdoptionApplication $application)
+     public function updateStatus(Request $request, AdoptionApplication $application)
     {
         $validated = $request->validate([
-        'id_status' => 'required|exists:application_statuses,id_status',
-        'admin_notes' => 'nullable|string',
+            'id_status' => 'required|exists:application_statuses,id_status',
+            'admin_notes' => 'nullable|string',
         ]);
-        $animal = $application->animal;
         $newStatus = ApplicationStatus::find($validated['id_status']);
         $application->update([
-        'id_status' => $validated['id_status'],
-        'admin_notes' => $validated['admin_notes'],
-        'approved_by_id_admin' => Auth::id(),
+            'id_status' => $validated['id_status'],
+            'admin_notes' => $validated['admin_notes'],
+            'approved_by_id_admin' => Auth::id(),
         ]);
-        if ($newStatus && $newStatus->status_name === 'Rechazado') {
-            if ($animal) {
-                $animal->status = 'Disponible';
-                $animal->save();
+        if ($newStatus && $newStatus->status_name === 'Rechazada') {
+            if ($application->animal) {
+                $application->animal->status = 'Disponible';
+                $application->animal->save();
             }
         }
-        if ($newStatus && $newStatus->status_name === 'Aprobado') {
-            if ($animal) {
-                $animal->status = 'Adoptado';
-                $animal->save();
+        if ($newStatus && $newStatus->status_name === 'Aprobada') {
+            if ($application->animal) {
+                $application->animal->status = 'Adoptado';
+                $application->animal->save();
             }
         }
         return response()->json($application->load(['user', 'animal', 'status']));

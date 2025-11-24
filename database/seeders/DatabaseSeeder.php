@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call([
             RoleAndPermissionSeeder::class, 
             ApplicationStatusSeeder::class, 
+            TermsAndConditionsSeeder::class,
         ]);
         $superAdmin = User::create([
             'first_name' => 'Super',
