@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Applications;
 
 use Illuminate\Http\Request;
-use App\Controllers\Controller;
+use App\Http\Controllers\Controller;
 use App\Models\ApplicationStatus;
 
 class ApplicationStatusController extends Controller

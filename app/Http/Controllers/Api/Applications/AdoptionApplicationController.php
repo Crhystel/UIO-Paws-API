@@ -14,7 +14,7 @@ class AdoptionApplicationController extends Controller
     }
     public function show(AdoptionApplication $application)
     {
-        return $application->load(['user', 'animal', 'status', 'homeInformation']);
+        return $application->load(['user', 'animal.breed.species', 'status', 'homeInformation']);
     }
     public function updateStatus(Request $request, AdoptionApplication $application)
     {
