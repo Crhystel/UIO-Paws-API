@@ -31,6 +31,9 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/animals/{animal}', [PublicContentController::class, 'showAnimal'])->name('animals.show');
     Route::get('/donation-items', [PublicContentController::class, 'listDonationItems'])->name('donation-items.index');
     Route::get('/volunteer-opportunities', [PublicContentController::class, 'listVolunteerOpportunities'])->name('volunteer-opportunities.index');
+    Route::get('/breeds', [\App\Http\Controllers\Api\Animals\BreedController::class, 'index']); 
+    Route::get('/shelters', [\App\Http\Controllers\Api\Shelters\ShelterController::class, 'index']);
+    Route::get('/species', [\App\Http\Controllers\Api\Animals\SpeciesController::class, 'index']);
 });
 
 // --- RUTAS PARA USUARIOS AUTENTICADOS (ROL 'User') ---

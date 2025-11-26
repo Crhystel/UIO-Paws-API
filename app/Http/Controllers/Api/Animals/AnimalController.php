@@ -5,11 +5,34 @@ namespace App\Http\Controllers\Api\Animals;
 use Illuminate\Http\Request;
 use App\Models\Animal;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Log;
 
 class AnimalController extends Controller
 {
-    public function index(){
-        $animals = Animal::with(['breed.species','shelter'])->paginate(15);
+    public function index(Request $request){
+        Log::info('--- INICIO BUSQUEDA API ---');
+        Log::info('Filtros recibidos:', $request->all());
+        $query = Animal::with(['breed.species','shelter', 'photos']);
+        if ($request->filled('animal_name')) {
+            $query->where('animal_name', 'like', '%' . $request->animal_name . '%');
+        }
+        if ($request->filled('id_breed')) {
+            $query->where('id_breed', $request->id_breed);
+        }
+        if ($request->filled('size')) {
+            $query->where('size', $request->size);
+        }
+        if ($request->filled('color')) {
+            $query->where('color', 'like', '%' . $request->color . '%');
+        }
+        if ($request->filled('id_shelter')) {
+            $query->where('id_shelter', $request->id_shelter);
+        }
+        Log::info('SQL Generado:', [
+        'sql' => $query->toSql(),
+        'bindings' => $query->getBindings()
+    ]);
+        $animals = $query->paginate(15);
         return response()->json($animals);
     }
     public function store(Request $request){
