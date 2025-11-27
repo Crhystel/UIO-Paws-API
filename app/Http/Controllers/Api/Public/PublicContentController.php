@@ -15,11 +15,8 @@ class PublicContentController extends Controller
      */
     public function listAnimals(Request $request)
     {
-        // 1. Iniciamos la consulta cargando relaciones
         $query = Animal::with(['breed.species', 'shelter', 'photos']);
-
-        // --- APLICACIÓN DE FILTROS ---
-
+        $query->where('status', 'Disponible'); 
         // Nombre
         if ($request->filled('animal_name')) {
             $query->where('animal_name', 'like', '%' . $request->animal_name . '%');

@@ -24,7 +24,7 @@ class ApplicationController extends Controller
         $user = Auth::user();
 
         $adoptions = AdoptionApplication::where('id_user', $user->id_user)
-            ->with(['animal:id_animal,animal_name', 'status:id_status,status_name']) 
+            ->with(['animal.photos', 'status:id_status,status_name']) 
             ->latest('application_date')
             ->get();
 
