@@ -22,7 +22,7 @@ class PublicContentController extends Controller
             $query->where('animal_name', 'like', '%' . $request->animal_name . '%');
         }
 
-        // Especie (Protegido con is_numeric para evitar errores)
+        // Especie 
         if ($request->filled('id_species') && is_numeric($request->id_species)) {
             $query->whereHas('breed', function ($q) use ($request) {
                 $q->where('id_species', $request->id_species);
@@ -64,9 +64,25 @@ class PublicContentController extends Controller
     /**
      * Muestra la lista de artículos que se necesitan para donar.
      */
-    public function listDonationItems()
+    public function listDonationItems(Request $request)
     {
-        return DonationItemsCatalog::orderBy('item_name')->get();
+        $query = DonationItemsCatalog::with('shelter');
+        $query->withSum(['applications as collected_quantity' => function ($q) {
+            $q->whereHas('status', function ($statusQ) {
+                $statusQ->whereIn('status_name', ['Aprobada', 'Aprobado', 'Entregado']);
+            });
+        }], 'donation_application_items.quantity');
+        if ($request->filled('category')) {
+            $query->where('category', $request->category);
+        }
+        if ($request->filled('id_shelter') && is_numeric($request->id_shelter)) {
+            $query->where('id_shelter', $request->id_shelter);
+        }
+        if ($request->filled('search')) {
+            $query->where('item_name', 'like', '%' . $request->search . '%');
+        }
+        $query->havingRaw('quantity_needed > COALESCE(collected_quantity, 0)');
+        return $query->orderBy('id_donation_item_catalog', 'desc')->paginate(12);
     }
     public function listVolunteerOpportunities()
     {
