@@ -2,36 +2,90 @@
 
 namespace App\Http\Controllers\Api\Donations;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller; 
+use App\Http\Controllers\Controller;
 use App\Models\DonationItemsCatalog;
+use Illuminate\Http\Request;
 
 class DonationItemsCatalogController extends Controller
 {
-    public function index(){
-        return DonationItemsCatalog::all();
+    /**
+     * Listar todos los items (JSON para el admin o front)
+     */
+    public function index()
+    {
+        return DonationItemsCatalog::with('shelter')->orderBy('id_donation_item_catalog', 'desc')->get();
     }
-    public function store(Request $request){
-        $validated = $request->validate([
-        'item_name' => 'required|string|unique:donation_items_catalog|max:255', 
-        'description' => 'nullable|string',
+
+    /**
+     * Crear un nuevo item en la BD
+     */
+    public function store(Request $request)
+    {
+        $validatedData = $request->validate([
+            'item_name'       => 'required|string|max:255',
+            'category'        => 'required|string|max:255',
+            'quantity_needed' => 'required|integer|min:1',
+            'id_shelter'      => 'nullable|integer|exists:shelters,id_shelter',
+            'description'     => 'nullable|string',
         ]);
-        $item = DonationItemsCatalog::create($validated);
-        return response()->json($item, 201); 
+
+        $item = DonationItemsCatalog::create($validatedData);
+
+        return response()->json([
+            'message' => 'Artículo creado exitosamente',
+            'data' => $item
+        ], 201);
     }
-    public function show(DonationItemsCatalog $donationItemsCatalog){
-        return $donationItemsCatalog;
+
+    /**
+     * Mostrar un solo item
+     */
+    public function show($id)
+    {
+        $item = DonationItemsCatalog::find($id);
+        if (!$item) {
+            return response()->json(['message' => 'Artículo no encontrado'], 404);
+        }
+        return $item;
     }
-    public function update(Request $request, DonationItemsCatalog $donationItemsCatalog){
-        $validated = $request->validate([
-        'item_name' => 'sometimes|required|string|max:255|unique:donation_items_catalog,item_name,'.$donationItemsCatalog->id_donation_item_catalog.',id_donation_item_catalog',
-        'description' => 'sometimes|nullable|string',
+
+    /**
+     * Actualizar item en la BD
+     */
+    public function update(Request $request, $id)
+    {
+        $item = DonationItemsCatalog::find($id);
+        if (!$item) {
+            return response()->json(['message' => 'Artículo no encontrado'], 404);
+        }
+
+        $validatedData = $request->validate([
+            'item_name'       => 'required|string|max:255',
+            'category'        => 'required|string|max:255',
+            'quantity_needed' => 'required|integer|min:1',
+            'id_shelter'      => 'nullable|integer|exists:shelters,id_shelter',
+            'description'     => 'nullable|string',
         ]);
-        $donationItemsCatalog->update($validated);
-        return response()->json($donationItemsCatalog);
+
+        $item->update($validatedData);
+
+        return response()->json([
+            'message' => 'Artículo actualizado',
+            'data' => $item
+        ]);
     }
-    public function destroy(DonationItemsCatalog $donationItemsCatalog){
-        $donationItemsCatalog->delete();
-        return response()->json(null, 204); 
+
+    /**
+     * Eliminar item de la BD
+     */
+    public function destroy($id)
+    {
+        $item = DonationItemsCatalog::find($id);
+        if (!$item) {
+            return response()->json(['message' => 'Artículo no encontrado'], 404);
+        }
+
+        $item->delete();
+        return response()->json(['message' => 'Artículo eliminado'], 204);
     }
 }
