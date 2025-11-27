@@ -33,7 +33,7 @@ class ApplicationController extends Controller
             ->latest('application_date')
             ->get();
         $donations = DonationApplication::where('id_user', $user->id_user)
-            ->with('status:id_status,status_name')
+            ->with(['status:id_status,status_name', 'items']) 
             ->latest('application_date')
             ->get();
 
