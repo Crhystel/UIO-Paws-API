@@ -19,4 +19,8 @@ class VolunteerOpportunity extends Model
         'requirements',
         'is_active',
     ];
+    public function applications()
+    {
+        return $this->hasMany(VolunteerApplication::class, 'id_volunteer_opportunity');
+    }
 }

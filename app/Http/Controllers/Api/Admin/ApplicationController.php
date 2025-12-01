@@ -26,4 +26,26 @@ class ApplicationController extends Controller
             'donations' => $donations,
         ]);
     }
+    public function storeVolunteer(Request $request)
+    {
+        $validated = $request->validate([
+            'motivation' => 'required|string|min:50|max:2000',
+            'id_volunteer_opportunity' => 'nullable|exists:volunteer_opportunities,id_volunteer_opportunity',
+        ]);
+        
+        $pendingStatus = \App\Models\ApplicationStatus::where('status_name', 'Pendiente')->first();
+        if (!$pendingStatus) {
+            return response()->json(['message' => 'Error de configuración.'], 500);
+        }
+
+        \App\Models\VolunteerApplication::create([
+            'id_user' => \Illuminate\Support\Facades\Auth::id(),
+            'motivation' => $validated['motivation'], 
+            'application_date' => now(),
+            'id_status' => $pendingStatus->id_status,
+            'id_volunteer_opportunity' => $validated['id_volunteer_opportunity'] ?? null,
+        ]);
+
+        return response()->json(['message' => 'Solicitud enviada con éxito.'], 201);
+    }
 }
