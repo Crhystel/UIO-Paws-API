@@ -117,6 +117,7 @@ class ApplicationController extends Controller
     {
         $validated = $request->validate([
             'motivation' => 'required|string|min:50|max:2000',
+            'id_volunteer_opportunity' => 'nullable|exists:volunteer_opportunities,id_volunteer_opportunity',
         ]);
         
         $pendingStatus = ApplicationStatus::where('status_name', 'Pendiente')->first();
@@ -129,6 +130,7 @@ class ApplicationController extends Controller
             'motivation' => $validated['motivation'],
             'application_date' => now(),
             'id_status' => $pendingStatus->id_status,
+            'id_volunteer_opportunity' => $validated['id_volunteer_opportunity'] ?? null,
         ]);
 
         return response()->json(['message' => 'Solicitud de voluntariado enviada con éxito. ¡Gracias por tu interés!'], 201);

@@ -12,7 +12,14 @@ class VolunteerApplication extends Model
     protected $table = 'volunteer_applications';
     protected $primaryKey = 'id_volunteer_applications';
     public $timestamps = false;
-    protected $fillable = ['motivation', 'application_date', 'id_user', 'id_status', 'reviewed_by_id_admin'];
+    protected $fillable = [
+        'motivation',
+        'application_date', 
+        'id_user', 
+        'id_status', 
+        'reviewed_by_id_admin',
+        'id_volunteer_opportunity'
+    ];
 
     public function user()
     {
@@ -21,5 +28,9 @@ class VolunteerApplication extends Model
     public function status()
     {
         return $this->belongsTo(ApplicationStatus::class, 'id_status');
+    }
+    public function opportunity()
+    {
+        return $this->belongsTo(VolunteerOpportunity::class, 'id_volunteer_opportunity');
     }
 }

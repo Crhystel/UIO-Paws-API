@@ -10,7 +10,7 @@ class VolunteerOpportunityController extends Controller
 {
     public function index()
     {
-        return VolunteerOpportunity::orderBy('title')->get();
+        return VolunteerOpportunity::withCount('applications')->orderBy('title')->get();
     }
 
     public function store(Request $request)
@@ -27,7 +27,7 @@ class VolunteerOpportunityController extends Controller
 
     public function show(VolunteerOpportunity $volunteerOpportunity)
     {
-        return $volunteerOpportunity;
+        return $volunteerOpportunity->loadCount('applications');
     }
 
     public function update(Request $request, VolunteerOpportunity $volunteerOpportunity)
