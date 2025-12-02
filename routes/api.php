@@ -27,6 +27,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::prefix('public')->name('public.')->group(function () {
+    // ... (tus rutas públicas sin cambios)
     Route::get('/animals', [PublicContentController::class, 'listAnimals'])->name('animals.index');
     Route::get('/animals/{animal}', [PublicContentController::class, 'showAnimal'])->name('animals.show');
     Route::get('/donation-items', [PublicContentController::class, 'listDonationItems'])->name('donation-items.index');
