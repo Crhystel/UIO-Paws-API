@@ -8,12 +8,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use Spatie\Permission\Traits\HasRoles;
+use Illuminate\Support\Facades\Storage;
 
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasApiTokens, HasFactory, Notifiable, HasRoles;
     protected $guard_name = 'sanctum';
+    protected $appends = ['profile_photo_url'];
 
     /**
      * The attributes that are mass assignable.
@@ -35,6 +37,7 @@ class User extends Authenticatable
         'phone',
         'id_address',
         'is_active' ,
+        'profile_photo_path',
     ];
 
     /**
@@ -84,5 +87,11 @@ class User extends Authenticatable
     public function termAcceptances()
     {
         return $this->hasMany(UserTermAcceptance::class, 'id_user');
+    }
+    public function getProfilePhotoUrlAttribute(){
+        if($this->profile_photo_path){
+            return Storage::url($this->profile_photo_path);
+        }
+        return 'https://via.placeholder.com/150';
     }
 }

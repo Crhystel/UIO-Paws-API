@@ -27,6 +27,7 @@ Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 
 Route::prefix('public')->name('public.')->group(function () {
+    // ... (tus rutas públicas sin cambios)
     Route::get('/animals', [PublicContentController::class, 'listAnimals'])->name('animals.index');
     Route::get('/animals/{animal}', [PublicContentController::class, 'showAnimal'])->name('animals.show');
     Route::get('/donation-items', [PublicContentController::class, 'listDonationItems'])->name('donation-items.index');
@@ -36,24 +37,34 @@ Route::prefix('public')->name('public.')->group(function () {
     Route::get('/species', [\App\Http\Controllers\Api\Animals\SpeciesController::class, 'index']);
 });
 
-// --- RUTAS PARA USUARIOS AUTENTICADOS (ROL 'User') ---
+// --- RUTAS PARA USUARIOS AUTENTICADOS ---
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
-    Route::get('/profile', [AuthController::class, 'userProfile']);
+    
+    // RUTA PRINCIPAL DE PERFIL (Obtiene todos los datos del usuario)
+    Route::get('/profile', [ProfileController::class, 'getProfile']);
 
+    // RUTAS AGRUPADAS POR LÓGICA DE USUARIO
     Route::prefix('user')->name('user.')->group(function () {
+        
+        // --- GESTIÓN DE APLICACIONES ---
         Route::get('/my-applications', [UserApplicationController::class, 'getMyApplications'])->name('applications.mine');
         Route::post('/adoption-applications', [UserApplicationController::class, 'storeAdoption'])->name('applications.storeAdoption');
         Route::post('/volunteer-applications', [UserApplicationController::class, 'storeVolunteer'])->name('applications.storeVolunteer');
         Route::post('/donation-applications', [UserDonationApplicationController::class, 'store'])->name('donations.apply');
-        Route::get('/emergency-contacts', [ProfileController::class, 'getEmergencyContacts']);
-        Route::post('/emergency-contacts', [ProfileController::class, 'storeEmergencyContact']);
-        Route::delete('/emergency-contacts/{contact}', [ProfileController::class, 'destroyEmergencyContact']);
+        
+        // --- NUEVO: GESTIÓN DE PERFIL ---
+        Route::put('/profile', [ProfileController::class, 'updateProfile'])->name('profile.update');
+        Route::put('/profile/password', [ProfileController::class, 'updatePassword'])->name('profile.password.update');
+        Route::post('/profile/photo', [ProfileController::class, 'updateProfilePhoto'])->name('profile.photo.update');
+
+        // --- GESTIÓN DE CONTACTOS DE EMERGENCIA ---
         Route::get('/emergency-contacts', [ProfileController::class, 'getEmergencyContacts'])->name('contacts.index');
         Route::post('/emergency-contacts', [ProfileController::class, 'storeEmergencyContact'])->name('contacts.store');
         Route::delete('/emergency-contacts/{contact}', [ProfileController::class, 'destroyEmergencyContact'])->name('contacts.destroy');
     });
 });
+
 // --- GESTIÓN DE USUARIOS (SOLO SUPER ADMIN) ---
 Route::middleware(['auth:sanctum', 'permission:manage users'])
     ->prefix('superadmin')
@@ -61,7 +72,6 @@ Route::middleware(['auth:sanctum', 'permission:manage users'])
     ->group(function () {
         Route::apiResource('users', AdminUserController::class);
     });
-
 // --- GESTIÓN  Y SOLICITUDES (SOLO ADMIN) ---
 Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|manage donation_catalog|review applications'])
     ->prefix('admin')
