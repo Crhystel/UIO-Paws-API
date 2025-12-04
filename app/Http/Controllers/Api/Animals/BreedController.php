@@ -29,8 +29,8 @@ class BreedController extends Controller
         ]);
         $breed->update($validated);
         return response()->json($breed->load('species'));
-        }
-        public function destroy(Breed $breed){
+    }
+    public function destroy(Breed $breed){
         $breed->delete();
         return response()->json(null, 204);
     }

@@ -31,7 +31,6 @@ class MedicalRecordController extends Controller
      */
     public function update(Request $request, MedicalRecord $record)
     {
-        // Usamos 'sometimes' para validar solo los campos que se envían.
         $validated = $request->validate([
             'event_date' => 'sometimes|required|date',
             'event_type' => 'sometimes|required|string|max:255',

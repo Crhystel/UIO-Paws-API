@@ -24,4 +24,4 @@ class Donation extends Model
     {
         return $this->hasMany(DonationItem::class, 'id_donation');
     }
-}
+} 

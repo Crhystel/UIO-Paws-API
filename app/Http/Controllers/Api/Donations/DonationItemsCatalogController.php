@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 class DonationItemsCatalogController extends Controller
 {
     /**
-     * Listar todos los items (JSON para el admin o front)
+     * Listar todos los items
      */
     public function index()
     {
