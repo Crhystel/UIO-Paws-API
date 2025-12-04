@@ -1026,13 +1026,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-<<<<<<< HEAD
             "license": ["MIT"],
-=======
-            "license": [
-                "MIT"
-            ],
->>>>>>> 9d74d54 (fixing and adding new library to manage animal photos)
             "authors": [
                 {
                     "name": "Oliver Vogel",
@@ -1042,16 +1036,7 @@
             ],
             "description": "Native PHP GIF Encoder/Decoder",
             "homepage": "https://github.com/intervention/gif",
-<<<<<<< HEAD
             "keywords": ["animation", "gd", "gif", "image"],
-=======
-            "keywords": [
-                "animation",
-                "gd",
-                "gif",
-                "image"
-            ],
->>>>>>> 9d74d54 (fixing and adding new library to manage animal photos)
             "support": {
                 "issues": "https://github.com/Intervention/gif/issues",
                 "source": "https://github.com/Intervention/gif/tree/4.2.2"
@@ -1108,9 +1093,7 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
+            "license": ["MIT"],
             "authors": [
                 {
                     "name": "Oliver Vogel",
