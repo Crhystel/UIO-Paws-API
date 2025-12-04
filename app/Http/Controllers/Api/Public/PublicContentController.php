@@ -21,35 +21,29 @@ class PublicContentController extends Controller
         if ($request->filled('animal_name')) {
             $query->where('animal_name', 'like', '%' . $request->animal_name . '%');
         }
-
         // Especie 
         if ($request->filled('id_species') && is_numeric($request->id_species)) {
             $query->whereHas('breed', function ($q) use ($request) {
                 $q->where('id_species', $request->id_species);
             });
         }
-
         // Raza
         if ($request->filled('id_breed') && is_numeric($request->id_breed)) {
             $query->where('id_breed', $request->id_breed);
         }
-
         // Refugio
         if ($request->filled('id_shelter') && is_numeric($request->id_shelter)) {
             $query->where('id_shelter', $request->id_shelter);
         }
-
         // Tamaño
         if ($request->filled('size')) {
             $query->where('size', $request->size);
         }
-
         // Color
         if ($request->filled('color')) {
             $query->where('color', 'like', '%' . $request->color . '%');
         }
         $query->orderBy('id_animal', 'desc');
-        // 3. Retornamos la paginación estándar (JSON puro)
         return $query->paginate(12);
     }
 
