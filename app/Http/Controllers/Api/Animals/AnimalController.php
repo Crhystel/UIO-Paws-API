@@ -10,8 +10,6 @@ use Illuminate\Support\Facades\Log;
 class AnimalController extends Controller
 {
     public function index(Request $request){
-        Log::info('--- INICIO BUSQUEDA API ---');
-        Log::info('Filtros recibidos:', $request->all());
         $query = Animal::with(['breed.species','shelter', 'photos']);
         if ($request->filled('animal_name')) {
             $query->where('animal_name', 'like', '%' . $request->animal_name . '%');
@@ -28,10 +26,6 @@ class AnimalController extends Controller
         if ($request->filled('id_shelter')) {
             $query->where('id_shelter', $request->id_shelter);
         }
-        Log::info('SQL Generado:', [
-        'sql' => $query->toSql(),
-        'bindings' => $query->getBindings()
-    ]);
         $animals = $query->paginate(15);
         return response()->json($animals);
     }
