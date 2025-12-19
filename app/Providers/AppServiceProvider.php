@@ -4,6 +4,8 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use App\Repositories\Contracts\AnimalRepositoryInterface;
+use App\Repositories\Eloquent\AnimalRepository;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -12,7 +14,9 @@ class AppServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        //
+        // Dependency Inversion Principle (DIP)
+        // Registramos que cuando se pida la interfaz, Laravel entregue la implementación Eloquent
+        $this->app->bind(AnimalRepositoryInterface::class, AnimalRepository::class);
     }
 
     /**

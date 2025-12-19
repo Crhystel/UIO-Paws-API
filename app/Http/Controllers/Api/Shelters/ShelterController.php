@@ -8,6 +8,7 @@ use App\Models\Address;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Arr; 
+use App\Factories\ShelterFactory; //Factory
 
 class ShelterController extends Controller
 {
@@ -29,13 +30,9 @@ class ShelterController extends Controller
             'address.country' => 'required|string|max:255',
         ]);
 
-        $shelter = DB::transaction(function () use ($validated) {
-            // 1. Crear la dirección
-            $address = Address::create($validated['address']);
-            $shelterData = Arr::except($validated, ['address']);
-            $shelterData['id_address'] = $address->id_address;
-            return Shelter::create($shelterData);
-        });
+        // PATRÓN: Factory
+        //  Delegamos la creación compleja (Shelter + Address) a la Factory.
+        $shelter = ShelterFactory::createWithAddress($validated);
 
         return response()->json($shelter->load('address'), 201); 
     }

@@ -9,27 +9,22 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Intervention\Image\ImageManager;
+use App\Traits\HandleImageUpload; //Trait
 
 class AnimalPhotoController extends Controller
 {
+    use HandleImageUpload; //Uso del Trait
     /**
      * Guarda una nueva foto para un animal.
      */
     public function store(Request $request, Animal $animal)
     {
-        $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
-        ]);
-        $file = $request->file('photo');
-        $fileName = Str::random(32) . '.' . $file->getClientOriginalExtension();
-        $path = 'animal-photos/' . $fileName;
-        $manager = ImageManager::gd();
-        $resizedImage = $manager->read($file)->cover(800, 600);
-        Storage::disk('public')->put($path, (string) $resizedImage->encode());
-        $photo = $animal->photos()->create([
-            'image_url' => $path,
-        ]);
+        $request->validate(['photo' => 'required|image|max:5120']);
 
+        // Usamos el método del Trait para procesar la imagen
+        $path = $this->uploadAndResize($request->file('photo'), 'animal-photos');
+
+        $photo = $animal->photos()->create(['image_url' => $path]);
         return response()->json($photo, 201);
     }
 
@@ -38,20 +33,12 @@ class AnimalPhotoController extends Controller
      */
     public function update(Request $request, AnimalPhoto $photo)
     {
-        $request->validate([
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,webp|max:5120',
-        ]);
-        Storage::disk('public')->delete($photo->image_url);
-        $file = $request->file('photo');
-        $fileName = Str::random(32) . '.' . $file->getClientOriginalExtension();
-        $path = 'animal-photos/' . $fileName;
-        $manager = ImageManager::gd();
-        $resizedImage = $manager->read($file)->cover(800, 600);
-        Storage::disk('public')->put($path, (string) $resizedImage->encode());
-        $photo->update([
-            'image_url' => $path,
-        ]);
-
+        $request->validate(['photo' => 'required|image|max:5120']);
+        // Borramos la vieja usando el Trait
+        $this->deleteFile($photo->image_url);
+        // Subimos la nueva usando el Trait
+        $path = $this->uploadAndResize($request->file('photo'), 'animal-photos');
+        $photo->update(['image_url' => $path]);
         return response()->json($photo);
     }
 
@@ -60,9 +47,9 @@ class AnimalPhotoController extends Controller
      */
     public function destroy(AnimalPhoto $photo)
     {
-        Storage::disk('public')->delete($photo->image_url);
+        // Borramos usando el Trait
+        $this->deleteFile($photo->image_url);
         $photo->delete();
-
         return response()->json(null, 204);
     }
 }

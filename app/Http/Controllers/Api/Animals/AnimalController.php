@@ -6,28 +6,20 @@ use Illuminate\Http\Request;
 use App\Models\Animal;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Log;
+use App\Repositories\Contracts\AnimalRepositoryInterface;
 
 class AnimalController extends Controller
 {
+    protected $animalRepo;
+    //Patron Repository
+    //Inyeccion de dependencias
+    public function __construct(AnimalRepositoryInterface $animalRepo)
+    {
+        $this->animalRepo = $animalRepo;
+    }
     public function index(Request $request){
-        $query = Animal::with(['breed.species','shelter', 'photos']);
-        if ($request->filled('animal_name')) {
-            $query->where('animal_name', 'like', '%' . $request->animal_name . '%');
-        }
-        if ($request->filled('id_breed')) {
-            $query->where('id_breed', $request->id_breed);
-        }
-        if ($request->filled('size')) {
-            $query->where('size', $request->size);
-        }
-        if ($request->filled('color')) {
-            $query->where('color', 'like', '%' . $request->color . '%');
-        }
-        if ($request->filled('id_shelter')) {
-            $query->where('id_shelter', $request->id_shelter);
-        }
-        $animals = $query->paginate(15);
-        return response()->json($animals);
+        //La logica de filtrado se movió al repositorio
+        return response()->json($this->animalRepo->search($request->all()));
     }
     public function store(Request $request){
         $validatedData = $request->validate([
@@ -43,7 +35,8 @@ class AnimalController extends Controller
         'age' => 'required|integer|min:0',
         'size' => 'required|in:Pequeño,Mediano,Grande',
         ]);
-        $animal = Animal::create($validatedData);
+        //Uso de repo no del modelo directamente
+        $animal = $this->animalRepo->create($validatedData); 
         return response()->json($animal, 201);
     }
     public function show(Animal $animal){
@@ -64,11 +57,13 @@ class AnimalController extends Controller
         'age' => 'sometimes|required|integer|min:0',
         'size' => 'sometimes|required|in:Pequeño,Mediano,Grande',
         ]);
-        $animal->update($validatedData);
-        return response()->json($animal);
+        //Uso de repo no del modelo directamente
+        $updatedAnimal = $this->animalRepo->update($animal->id_animal, $validatedData);
+        return response()->json($updatedAnimal);
     }
     public function destroy(Animal $animal){
-        $animal->delete();
+        //Uso de repo no del modelo directamente
+        $this->animalRepo->delete($animal->id_animal);
         return response()->json(null, 204);
     }
 }
