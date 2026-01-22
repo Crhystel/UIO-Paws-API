@@ -1,13 +1,17 @@
 FROM php:8.2-apache
 
-# 1. Instalar dependencias y extensiones
+# 1. Instalar dependencias del sistema incluyendo librerías de IMÁGENES (JPEG, PNG, WebP)
 RUN apt-get update && apt-get install -y \
     libpq-dev \
     libpng-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libwebp-dev \
     zip \
     libzip-dev \
     unzip \
     git \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
     && docker-php-ext-install pdo pdo_pgsql gd zip
 
 # 2. Habilitar mod_rewrite
