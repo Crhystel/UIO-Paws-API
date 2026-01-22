@@ -1,5 +1,4 @@
 <?php
-
 namespace Database\Seeders;
 
 use App\Models\User;
@@ -13,31 +12,31 @@ class UserSeeder extends Seeder
     {
         $users = [
             [
-                'first_name' => 'Super',
+                'first_name' => 'Juan',
                 'last_name'  => 'Admin',
-                'email'      => 'superadmin@adopcion.com',
-                'password'   => 'UioPawsSuperAdmin123',
+                'email'      => 'juan@gmail.com',
+                'password'   => '123456789',
                 'role'       => RoleEnum::SUPER_ADMIN
             ],
             [
-                'first_name' => 'Admin',
+                'first_name' => 'Alva',
                 'last_name'  => 'Principal',
-                'email'      => 'admin@adopcion.com',
-                'password'   => 'UioPawsAdmin123',
+                'email'      => 'alva@gmail.com',
+                'password'   => '123456789',
                 'role'       => RoleEnum::ADMIN
             ],
             [
-                'first_name' => 'Usuario',
+                'first_name' => 'Ana',
                 'last_name'  => 'Ejemplo',
-                'email'      => 'user@adopcion.com',
-                'password'   => 'UioPawsUser123',
+                'email'      => 'ana@gmail.com',
+                'password'   => '123456789',
                 'role'       => RoleEnum::USER
             ],
         ];
 
         foreach ($users as $userData) {
             $user = User::firstOrCreate(
-                ['email' => $userData['email']],
+                ['email' => $userData['email']], // Busca por email
                 [
                     'first_name'    => $userData['first_name'],
                     'last_name'     => $userData['last_name'],
@@ -46,7 +45,10 @@ class UserSeeder extends Seeder
                 ]
             );
 
-            $user->assignRole($userData['role']->value);
+            // Solo asigna el rol si no lo tiene para evitar errores
+            if (!$user->hasRole($userData['role']->value)) {
+                $user->assignRole($userData['role']->value);
+            }
         }
     }
 }

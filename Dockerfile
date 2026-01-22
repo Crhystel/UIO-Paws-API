@@ -35,7 +35,7 @@ EXPOSE 80
 
 # 8. Solo migrar y encender
 CMD php artisan config:clear && \
-    php artisan migrate --force && \
+    php artisan migrate --seed --force && \
     php artisan config:cache && \
     php artisan route:cache && \
     php artisan view:cache && \
