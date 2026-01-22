@@ -61,23 +61,23 @@ class PublicContentController extends Controller
     public function listDonationItems(Request $request)
     {
         $query = DonationItemsCatalog::with('shelter');
-        $query->withSum(['applications as collected_quantity' => function ($q) {
-            $q->whereHas('status', function ($statusQ) {
-                $statusQ->whereIn('status_name', ['Aprobada', 'Aprobado', 'Entregado']);
-            });
-        }], 'donation_application_items.quantity');
+        $query->whereRaw('quantity_needed > collected_quantity');
+
         if ($request->filled('category')) {
             $query->where('category', $request->category);
         }
+
         if ($request->filled('id_shelter') && is_numeric($request->id_shelter)) {
             $query->where('id_shelter', $request->id_shelter);
         }
+
         if ($request->filled('search')) {
             $query->where('item_name', 'like', '%' . $request->search . '%');
         }
-        $query->havingRaw('quantity_needed > COALESCE(collected_quantity, 0)');
+
         return $query->orderBy('id_donation_item_catalog', 'desc')->paginate(12);
     }
+
     public function listVolunteerOpportunities()
     {
         return VolunteerOpportunity::where('is_active', true)->orderBy('title')->get();

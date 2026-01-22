@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('donation_items_catalog', function (Blueprint $table) {
-            $table->integer('collected_quantity')->default(0);
+            $table->dropColumn('collected_quantity');
         });
     }
 };
