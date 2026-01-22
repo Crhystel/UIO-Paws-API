@@ -2,7 +2,7 @@
 
 namespace App\Repositories\Contracts;
 
-interface ShelterRepositoryInterface
+interface SpeciesRepositoryInterface
 {
     public function all();
     public function find($id);

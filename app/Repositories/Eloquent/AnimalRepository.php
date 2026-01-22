@@ -26,7 +26,13 @@ class AnimalRepository implements AnimalRepositoryInterface
         return Animal::with(['breed.species', 'shelter', 'photos', 'medicalRecords'])->findOrFail($id);
     }
 
-    public function create(array $data) { return Animal::create($data); }
+    public function create(array $data) 
+    { 
+        $animal = Animal::create($data);
+        $animal->refresh(); 
+        
+        return $animal;
+    }
 
     public function update($id, array $data)
     {

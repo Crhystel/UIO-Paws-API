@@ -1,84 +1,51 @@
 <?php
-    namespace App\Http\Controllers\Api\Login;
 
-    use App\Http\Controllers\Controller;
-    use Illuminate\Http\Request;
-    use App\Models\User;
-    use Illuminate\Support\Facades\Hash;
-    use Illuminate\Validation\ValidationException;
+namespace App\Http\Controllers\Api\Login;
 
-    class AuthController extends Controller
+use App\Http\Controllers\Controller;
+use App\Http\Requests\Login\RegisterRequest;
+use App\Http\Requests\Login\LoginRequest;
+use App\Services\AuthService;
+use Illuminate\Http\Request;
+
+class AuthController extends Controller
+{
+    protected $authService;
+
+    public function __construct(AuthService $authService)
     {
-        public function register(Request $request)
-        {
-            try {
-                $validated = $request->validate([
-                    'first_name' => 'required|string|max:255',
-                    'middle_name' => 'nullable|string|max:255',
-                    'last_name' => 'required|string|max:255',
-                    'second_last_name' => 'nullable|string|max:255',
-                    'document_type' => 'required|string|max:255',
-                    'document_number' => 'required|string|max:255',
-                    'phone' => 'required|string|max:20',
-                    'email' => 'required|string|email|max:255|unique:users',
-                    'password' => 'required|string|min:8', 
-                ]);
-                $createData = $validated;
-                $createData['password_hash'] = Hash::make($validated['password']);
-                unset($createData['password']);
-                $createData['is_active'] = true;
-
-                $user = User::create($createData);
-                
-                $user->assignRole('User'); 
-
-                return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
-
-            } catch (ValidationException $e) {
-                return response()->json(['message' => 'Datos inválidos.', 'errors' => $e->errors()], 422);
-            
-            } catch (\Exception $e) {
-                Log::error('Excepción durante el registro: ' . $e->getMessage());
-                return response()->json([
-                    'message' => 'Ocurrió un error inesperado durante el registro.'], 500);
-            }
-        }
-
-        public function login(Request $request)
-        {
-            $request->validate([
-                'email' => 'required|email',
-                'password' => 'required',
-            ]);
-            $user = User::where('email', $request->email)->first();
-            if (!$user) {
-                return response()->json(['error' => 'Usuario no encontrado en la base de datos.'], 404);
-            }
-
-            if (!$user || !Hash::check($request->password, $user->password_hash)) {
-                throw ValidationException::withMessages([
-                    'email' => ['Las credenciales son incorrectas.'],
-                ]);
-            }
-
-            $token = $user->createToken('auth_token')->plainTextToken;
-            $userRole = $user->getRoleNames()->first();
-
-            return response()->json([
-                'access_token' => $token,
-                'token_type' => 'Bearer',
-                'user_role' => $userRole
-            ]);
-        }
-
-        public function logout(Request $request)
-        {
-            $request->user()->currentAccessToken()->delete();
-            return response()->json(['message' => 'Sesión cerrada.']);
-        }
-
-        public function userProfile(Request $request)
-        {
-            return response()->json($request->user()->load('roles'));
-        }
+        $this->authService = $authService;
     }
+
+    public function register(RegisterRequest $request)
+    {
+        $this->authService->registerUser($request->validated());
+        
+        return response()->json(['message' => 'Usuario registrado exitosamente.'], 201);
+    }
+
+    public function login(LoginRequest $request)
+    {
+        $result = $this->authService->attemptLogin(
+            $request->email, 
+            $request->password
+        );
+
+        if (isset($result['error'])) {
+            return response()->json(['error' => $result['error']], $result['status']);
+        }
+
+        return response()->json($result, 200);
+    }
+
+    public function logout(Request $request)
+    {
+        $request->user()->currentAccessToken()->delete();
+        return response()->json(['message' => 'Sesión cerrada.']);
+    }
+
+    public function userProfile(Request $request)
+    {
+        return response()->json($request->user()->load('roles'));
+    }
+}

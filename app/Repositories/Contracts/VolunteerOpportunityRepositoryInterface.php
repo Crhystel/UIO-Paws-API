@@ -2,10 +2,9 @@
 
 namespace App\Repositories\Contracts;
 
-interface ShelterRepositoryInterface
-{
+interface VolunteerOpportunityRepositoryInterface {
     public function all();
-    public function find($id);
+    public function findWithCount($id);
     public function create(array $data);
     public function update($id, array $data);
     public function delete($id);

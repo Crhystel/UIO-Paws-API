@@ -8,6 +8,8 @@ class Animal extends Model{
     use HasFactory;
     protected $table='animals';
     protected $primaryKey='id_animal';
+    public $incrementing = true; 
+    protected $keyType = 'int';
     public $timestamps = false;
     protected $fillable=[
         'animal_name',

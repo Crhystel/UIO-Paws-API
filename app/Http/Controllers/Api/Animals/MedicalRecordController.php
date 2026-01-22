@@ -1,54 +1,32 @@
 <?php
-
 namespace App\Http\Controllers\Api\Animals;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Contracts\MedicalRecordRepositoryInterface;
+use App\Http\Requests\Animals\MedicalRecordRequest;
 use App\Models\Animal;
 use App\Models\MedicalRecord;
-use Illuminate\Http\Request;
 
 class MedicalRecordController extends Controller
 {
-    /**
-     * Guarda un nuevo registro médico para un animal.
-     */
-    public function store(Request $request, Animal $animal)
-    {
-        $validated = $request->validate([
-            'event_date' => 'required|date',
-            'event_type' => 'required|string|max:255', 
-            'description' => 'required|string',
-            'veterinarian_name' => 'nullable|string|max:255',
-            'medication' => 'nullable|string|max:255',
-        ]);
+    protected $medicalRepo;
 
-        $record = $animal->medicalRecords()->create($validated);
+    public function __construct(MedicalRecordRepositoryInterface $medicalRepo) {
+        $this->medicalRepo = $medicalRepo;
+    }
 
+    public function store(MedicalRecordRequest $request, Animal $animal) {
+        $record = $this->medicalRepo->createForAnimal($animal->id_animal, $request->validated());
         return response()->json($record, 201);
     }
-     /**
-     * Actualiza un registro médico existente.
-     */
-    public function update(Request $request, MedicalRecord $record)
-    {
-        $validated = $request->validate([
-            'event_date' => 'sometimes|required|date',
-            'event_type' => 'sometimes|required|string|max:255',
-            'description' => 'sometimes|required|string',
-            'veterinarian_name' => 'nullable|string|max:255',
-            'medication' => 'nullable|string|max:255',
-        ]);
 
-        $record->update($validated);
-        return response()->json($record, 200);
+    public function update(MedicalRecordRequest $request, MedicalRecord $record) {
+        $updated = $this->medicalRepo->update($record->id_record, $request->validated());
+        return response()->json($updated, 200);
     }
 
-    /**
-     * Elimina un registro médico.
-     */
-    public function destroy(MedicalRecord $record)
-    {
-        $record->delete();
+    public function destroy(MedicalRecord $record) {
+        $this->medicalRepo->delete($record->id_record);
         return response()->json(null, 204);
     }
 }

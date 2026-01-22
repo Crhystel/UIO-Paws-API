@@ -2,6 +2,8 @@
 
 namespace Database\Seeders;
 
+use App\Enums\PermissionEnum;
+use App\Enums\RoleEnum;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\Models\Permission;
@@ -12,26 +14,28 @@ class RoleAndPermissionSeeder extends Seeder
     public function run(): void
     {
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
-        Permission::create(['name' => 'manage users', 'guard_name' => 'sanctum']);
-        Permission::create(['name' => 'manage animals', 'guard_name' => 'sanctum']);
-        Permission::create(['name' => 'manage shelters', 'guard_name' => 'sanctum']);
-        Permission::create(['name' => 'manage donation_catalog', 'guard_name' => 'sanctum']);
-        Permission::create(['name' => 'review applications', 'guard_name' => 'sanctum']);
 
-        // ROL 1: Usuario Normal 
-        Role::create(['name' => 'User', 'guard_name' => 'sanctum']);
+        $guard = 'sanctum';
 
-        // ROL 2: Admin 
-        $adminRole = Role::create(['name' => 'Admin', 'guard_name' => 'sanctum']);
-        $adminRole->givePermissionTo([
-            'manage animals',
-            'manage shelters',
-            'manage donation_catalog',
-            'review applications',
+        foreach (PermissionEnum::cases() as $permission) {
+            Permission::firstOrCreate([
+                'name' => $permission->value, 
+                'guard_name' => $guard
+            ]);
+        }
+
+        // Roles
+        $userRole = Role::firstOrCreate(['name' => RoleEnum::USER->value, 'guard_name' => $guard]);
+        
+        $adminRole = Role::firstOrCreate(['name' => RoleEnum::ADMIN->value, 'guard_name' => $guard]);
+        $adminRole->syncPermissions([ 
+            PermissionEnum::MANAGE_ANIMALS->value,
+            PermissionEnum::MANAGE_SHELTERS->value,
+            PermissionEnum::MANAGE_DONATION_CATALOG->value,
+            PermissionEnum::REVIEW_APPLICATIONS->value,
         ]);
 
-        // ROL 3: Super Admin
-        $superAdminRole = Role::create(['name' => 'Super Admin', 'guard_name' => 'sanctum']);
-        $superAdminRole->givePermissionTo('manage users');
+        $superAdminRole = Role::firstOrCreate(['name' => RoleEnum::SUPER_ADMIN->value, 'guard_name' => $guard]);
+        $superAdminRole->syncPermissions([PermissionEnum::MANAGE_USERS->value]);
     }
 }

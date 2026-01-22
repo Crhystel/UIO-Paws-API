@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Enums\PermissionEnum;
 use App\Http\Controllers\Api\Login\AuthController;
 use App\Http\Controllers\Api\Public\PublicContentController;
 use App\Http\Controllers\Api\User\ApplicationController as UserApplicationController;
@@ -64,7 +65,7 @@ Route::middleware('auth:sanctum')->group(function () {
 });
 
 // --- GESTIÓN DE USUARIOS (SOLO SUPER ADMIN) ---
-Route::middleware(['auth:sanctum', 'permission:manage users'])
+Route::middleware(['auth:sanctum', 'permission:' . PermissionEnum::MANAGE_USERS->value])
     ->prefix('superadmin')
     ->name('superadmin.')
     ->group(function () {
@@ -72,7 +73,14 @@ Route::middleware(['auth:sanctum', 'permission:manage users'])
     });
 
 // --- GESTIÓN Y SOLICITUDES (SOLO ADMIN) ---
-Route::middleware(['auth:sanctum', 'permission:manage animals|manage shelters|manage donation_catalog|review applications'])
+$adminPermissions = implode('|', [
+    PermissionEnum::MANAGE_ANIMALS->value,
+    PermissionEnum::MANAGE_SHELTERS->value,
+    PermissionEnum::MANAGE_DONATION_CATALOG->value,
+    PermissionEnum::REVIEW_APPLICATIONS->value,
+]);
+
+Route::middleware(['auth:sanctum', 'permission:' . $adminPermissions])
     ->prefix('admin')
     ->name('admin.')
     ->group(function () {

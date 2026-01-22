@@ -1,50 +1,38 @@
 <?php
-
 namespace App\Http\Controllers\Api\Volunteers;
 
 use App\Http\Controllers\Controller;
+use App\Repositories\Contracts\VolunteerOpportunityRepositoryInterface;
+use App\Http\Requests\Volunteers\VolunteerOpportunityRequest;
 use App\Models\VolunteerOpportunity;
-use Illuminate\Http\Request;
 
-class VolunteerOpportunityController extends Controller
-{
-    public function index()
-    {
-        return VolunteerOpportunity::withCount('applications')->orderBy('title')->get();
+class VolunteerOpportunityController extends Controller {
+    protected $opportunityRepo;
+
+    public function __construct(VolunteerOpportunityRepositoryInterface $opportunityRepo) {
+        $this->opportunityRepo = $opportunityRepo;
     }
 
-    public function store(Request $request)
-    {
-        $validated = $request->validate([
-            'title' => 'required|string|unique:volunteer_opportunities|max:255',
-            'description' => 'required|string',
-            'requirements' => 'nullable|string',
-            'is_active' => 'required|boolean',
-        ]);
-        $opportunity = VolunteerOpportunity::create($validated);
+    public function index() {
+        return response()->json($this->opportunityRepo->all());
+    }
+
+    public function store(VolunteerOpportunityRequest $request) {
+        $opportunity = $this->opportunityRepo->create($request->validated());
         return response()->json($opportunity, 201);
     }
 
-    public function show(VolunteerOpportunity $volunteerOpportunity)
-    {
-        return $volunteerOpportunity->loadCount('applications');
+    public function show(VolunteerOpportunity $volunteerOpportunity) {
+        return response()->json($this->opportunityRepo->findWithCount($volunteerOpportunity->id_volunteer_opportunity));
     }
 
-    public function update(Request $request, VolunteerOpportunity $volunteerOpportunity)
-    {
-        $validated = $request->validate([
-            'title' => 'sometimes|required|string|max:255|unique:volunteer_opportunities,title,' . $volunteerOpportunity->id_volunteer_opportunity . ',id_volunteer_opportunity',
-            'description' => 'sometimes|required|string',
-            'requirements' => 'sometimes|nullable|string',
-            'is_active' => 'sometimes|required|boolean',
-        ]);
-        $volunteerOpportunity->update($validated);
-        return response()->json($volunteerOpportunity);
+    public function update(VolunteerOpportunityRequest $request, VolunteerOpportunity $volunteerOpportunity) {
+        $opportunity = $this->opportunityRepo->update($volunteerOpportunity->id_volunteer_opportunity, $request->validated());
+        return response()->json($opportunity);
     }
 
-    public function destroy(VolunteerOpportunity $volunteerOpportunity)
-    {
-        $volunteerOpportunity->delete();
+    public function destroy(VolunteerOpportunity $volunteerOpportunity) {
+        $this->opportunityRepo->delete($volunteerOpportunity->id_volunteer_opportunity);
         return response()->json(null, 204);
     }
 }
